@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Reception">
+      <UniqueIdentifier>{c369afe7-6706-4090-aee7-4e236d132ab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Exam">
+      <UniqueIdentifier>{8c9113ee-9e57-4781-bfb1-b66fca39ff1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fee">
+      <UniqueIdentifier>{48bb02f8-1a60-4e5d-a899-982be0bc1986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PM">
+      <UniqueIdentifier>{7405f121-86ca-44d7-b993-4eafc64f7c9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LAB">
+      <UniqueIdentifier>{55cdb889-c3e9-45d4-801d-9bb88f4380fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Reception">
+      <UniqueIdentifier>{c704b75f-3545-4b92-8bce-fe7bd763058c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exam">
+      <UniqueIdentifier>{4fab8999-b385-49dc-9ab0-b323152cd397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fee">
+      <UniqueIdentifier>{e309c279-9dbc-48a7-8bbd-6b3ecc1add2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PM">
+      <UniqueIdentifier>{967abdff-45bf-46c5-a674-7087cc2ffd2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PM\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Header Files\LAB">
+      <UniqueIdentifier>{49ae11ac-2afc-421d-a0bc-cc4dceb3c56e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EMPrintForms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HMSReportFormDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HMSReportForms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RMPrintForms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reception\RMGeneralExaminationFeeReport.cpp">
+      <Filter>Source Files\Reception</Filter>
+    </ClCompile>
+    <ClCompile Include="Reception\RMGeneralExaminationInformationReport.cpp">
+      <Filter>Source Files\Reception</Filter>
+    </ClCompile>
+    <ClCompile Include="Reception\RMRegistrationPatientListReport.cpp">
+      <Filter>Source Files\Reception</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMAgeDiseaseStatisticsReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMBaoCaoTongHopThangTheoPK.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMBCHangThangKhoaKhamC1_1.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMDanhsachBNVaoVien.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMDrugDeliveryListReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMExaminationActivitiesReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMExaminationListReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMExaminationTreatmentActReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMGeneralExaminationReportDialog.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMInwardListReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMInwardStatisticForDepartmentReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMInwardStatisticReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMObjectDiseaseStatisticsReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMStatisticsGeneralPatientReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMStatisticsMajorDiseasesReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="Examination\EMWeekSynthesisReport.cpp">
+      <Filter>Source Files\Exam</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMAdvancePaymentList.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMBookEntriesRegisterTableReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMCollectDetailbyItem.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMDanhsachBNNopTien_VP.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMDanhSachHoaDonThuPhi.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMGeneralCollectbyDepartment.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMGeneralInsuranceCost25ATH.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMGeneralReportbyClerk.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMInsuranceCost25A.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMInsuranceReport21a.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMNotDischargeTempMoneyPatientListReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMNotPayDischargeTempPatientListReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMOutpatientCostSynthesisbyDay.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMOutpatientCostSynthesisbyDept.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMOutpatientCostSynthesisbyLine.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMPaidPatientList.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMPayMoneyPatientListReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMRationStrengthGeneralByDayReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMRefundbyDepartment.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMRefundDetailbyItem.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMRefundPatientList.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMServiceMedicalIncomingOutgoingReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMSudungthuocBHYT20a.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMTempMoneyReport.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\FMTestPatientList.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalFee\HFGeneralCostInsuraceReportTH25aDialog.cpp">
+      <Filter>Source Files\Fee</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBangGiaBanThuoc.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBangKeChiTietNoPhaiThu.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBangKeChiTietNoPhaiTra.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBangKeNoPhaiThu.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBangKeNoPhaiTra.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBangKePhieuNhap.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBaoCaoKiemKeKho.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMBaocaoxuatthuocchokhoatheodoituong.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMDonthuoctonghop.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMPrescriptionListReportDialog.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMPurchaseOrderReportDialog.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMReportConditionDialog.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMSDrugDetailBook.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMSExportSheetList.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMSServiceDrugUseofOutpatient.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMStockCardReportDialog.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Pharmacy\PMSummaryImportExportInstockForStocksReportDialog.cpp">
+      <Filter>Source Files\PM</Filter>
+    </ClCompile>
+    <ClCompile Include="Lab\LIMSTestStaticsbyObject.cpp">
+      <Filter>Source Files\LAB</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EMPrintForms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HMSReportFormDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RMPrintForms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Reception\RMGeneralExaminationFeeReport.h">
+      <Filter>Header Files\Reception</Filter>
+    </ClInclude>
+    <ClInclude Include="Reception\RMGeneralExaminationInformationReport.h">
+      <Filter>Header Files\Reception</Filter>
+    </ClInclude>
+    <ClInclude Include="Reception\RMRegistrationPatientListReport.h">
+      <Filter>Header Files\Reception</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMAgeDiseaseStatisticsReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMBaoCaoTongHopThangTheoPK.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMBCHangThangKhoaKhamC1_1.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMDanhsachBNVaoVien.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMDrugDeliveryListReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMExaminationActivitiesReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMExaminationListReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMExaminationTreatmentActReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMGeneralExaminationReportDialog.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMInwardListReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMInwardStatisticForDepartmentReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMInwardStatisticReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMObjectDiseaseStatisticsReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMStatisticsGeneralPatientReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMStatisticsMajorDiseasesReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="Examination\EMWeekSynthesisReport.h">
+      <Filter>Header Files\Exam</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMAdvancePaymentList.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMBookEntriesRegisterTableReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMCollectDetailbyItem.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMDanhsachBNNopTien_VP.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMDanhSachHoaDonThuPhi.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMGeneralCollectbyDepartment.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMGeneralInsuranceCost25ATH.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMGeneralReportbyClerk.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMInsuranceCost25A.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMInsuranceReport21a.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMNotDischargeTempMoneyPatientListReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMNotPayDischargeTempPatientListReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMOutpatientCostSynthesisbyDay.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMOutpatientCostSynthesisbyDept.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMOutpatientCostSynthesisbyLine.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMPaidPatientList.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMPayMoneyPatientListReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMRationStrengthGeneralByDayReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMRefundbyDepartment.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMRefundDetailbyItem.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMRefundPatientList.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMServiceMedicalIncomingOutgoingReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMSudungthuocBHYT20a.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMTempMoneyReport.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\FMTestPatientList.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalFee\HFGeneralCostInsuraceReportTH25aDialog.h">
+      <Filter>Header Files\Fee</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBangGiaBanThuoc.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBangKeChiTietNoPhaiThu.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBangKeChiTietNoPhaiTra.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBangKeNoPhaiThu.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBangKeNoPhaiTra.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBangKePhieuNhap.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBaoCaoKiemKeKho.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMBaocaoxuatthuocchokhoatheodoituong.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMDonthuoctonghop.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMPrescriptionListReportDialog.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMPurchaseOrderReportDialog.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMReportConditionDialog.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMSDrugDetailBook.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMSExportSheetList.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMSServiceDrugUseofOutpatient.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMStockCardReportDialog.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy\PMSummaryImportExportInstockForStocksReportDialog.h">
+      <Filter>Header Files\PM</Filter>
+    </ClInclude>
+    <ClInclude Include="Lab\LIMSTestStaticsbyObject.h">
+      <Filter>Header Files\LAB</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HMSReportForms1.rc">
+      <Filter>Header Files\PM\Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>

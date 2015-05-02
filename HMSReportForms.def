@@ -1,0 +1,30 @@
+; HMSReportForms.def : Declares the module parameters for the DLL.
+
+LIBRARY      "HMSReportForms"
+
+EXPORTS
+    ; Explicit exports can go here
+    
+;Globla functions. apply for all module
+
+
+;Reception Module
+RMInitialize
+RMPrintReceptionReceipt
+
+
+;Examination Module
+EMInitialize
+EMPrintExaminationReceipt
+
+
+;HospitalFee Module
+
+
+;Treatment Module
+
+;Pharmacy Module
+
+;LAB
+
+;PACS

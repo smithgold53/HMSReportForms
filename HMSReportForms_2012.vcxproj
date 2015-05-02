@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>HMSReportFormsMangr</ProjectName>
+    <ProjectGuid>{508AAC3A-F400-42EA-A621-8DF06DF4C085}</ProjectGuid>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>../../Release/HMSReportForm_108\</OutDir>
+    <IntDir>../../Release/HMSReportForm_108\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>../../Release/HMSReportForms\</OutDir>
+    <IntDir>../../Release/HMSReportForms\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Include;..\Include\HMSCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <CustomBuildStep>
+      <Command>copy Reception\*.h ..\Include\HMSReportForms\Reception
+copy Examination\*.h ..\Include\HMSReportForms\Examination
+copy Treatment\*.h ..\Include\HMSReportForms\Treatment
+copy Pharmacy\*.h ..\Include\HMSReportForms\Pharmacy
+copy HospitalFee\*.h ..\Include\HMSReportForms\HospitalFee
+copy LAB\*.h ..\Include\HMSReportForms\LAB
+copy HMSReportFormDialog.h ..\Include\HMSReportForms
+</Command>
+      <Outputs>Custom;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Link>
+      <AdditionalDependencies>..\Lib\VIMES.LIB;..\Lib\HMSCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../Bin/HMSReportForms.dll</OutputFile>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile />
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>../Lib/HMSReportForms.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Include;..\Include\HMSCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <CustomBuildStep>
+      <Command>copy Reception\*.h ..\Include\HMSReportForms\Reception
+copy Examination\*.h ..\Include\HMSReportForms\Examination
+copy Treatment\*.h ..\Include\HMSReportForms\Treatment
+copy Pharmacy\*.h ..\Include\HMSReportForms\Pharmacy
+copy HospitalFee\*.h ..\Include\HMSReportForms\HospitalFee
+copy LAB\*.h ..\Include\HMSReportForms\LAB
+copy PACS\*.h ..\Include\HMSReportForms\PACS
+copy HMSReportFormDialog.h ..\Include\HMSReportForms
+copy ReadMe.txt ..\Include\ReportForms
+</Command>
+      <Outputs>Custom;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Link>
+      <AdditionalDependencies>..\Lib\VIMES.lib;..\Lib\HMSCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../Bin/HMSReportForms.dll</OutputFile>
+      <ModuleDefinitionFile>.\HMSReportForms.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>../LIB/HMSReportForms.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="EMPrintForms.cpp" />
+    <ClCompile Include="HMSReportFormDialog.cpp" />
+    <ClCompile Include="HMSReportForms.cpp" />
+    <ClCompile Include="ReportImage.cpp" />
+    <ClCompile Include="RMPrintForms.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Reception\RMGeneralExaminationFeeReport.cpp" />
+    <ClCompile Include="Reception\RMGeneralExaminationInformationReport.cpp" />
+    <ClCompile Include="Reception\RMRegistrationPatientListReport.cpp" />
+    <ClCompile Include="Examination\EMAgeDiseaseStatisticsReport.cpp" />
+    <ClCompile Include="Examination\EMBaoCaoTongHopThangTheoPK.cpp" />
+    <ClCompile Include="Examination\EMBCHangThangKhoaKhamC1_1.cpp" />
+    <ClCompile Include="Examination\EMDanhsachBNVaoVien.cpp" />
+    <ClCompile Include="Examination\EMDrugDeliveryListReport.cpp" />
+    <ClCompile Include="Examination\EMExaminationActivitiesReport.cpp" />
+    <ClCompile Include="Examination\EMExaminationListReport.cpp" />
+    <ClCompile Include="Examination\EMExaminationTreatmentActReport.cpp" />
+    <ClCompile Include="Examination\EMGeneralExaminationReportDialog.cpp" />
+    <ClCompile Include="Examination\EMInwardListReport.cpp" />
+    <ClCompile Include="Examination\EMInwardStatisticForDepartmentReport.cpp" />
+    <ClCompile Include="Examination\EMInwardStatisticReport.cpp" />
+    <ClCompile Include="Examination\EMObjectDiseaseStatisticsReport.cpp" />
+    <ClCompile Include="Examination\EMStatisticsGeneralPatientReport.cpp" />
+    <ClCompile Include="Examination\EMStatisticsMajorDiseasesReport.cpp" />
+    <ClCompile Include="Examination\EMWeekSynthesisReport.cpp" />
+    <ClCompile Include="HospitalFee\FMAdvancePaymentList.cpp" />
+    <ClCompile Include="HospitalFee\FMBookEntriesRegisterTableReport.cpp" />
+    <ClCompile Include="HospitalFee\FMCollectDetailbyItem.cpp" />
+    <ClCompile Include="HospitalFee\FMDanhsachBNNopTien_VP.cpp" />
+    <ClCompile Include="HospitalFee\FMDanhSachHoaDonThuPhi.cpp" />
+    <ClCompile Include="HospitalFee\FMGeneralCollectbyDepartment.cpp" />
+    <ClCompile Include="HospitalFee\FMGeneralInsuranceCost25ATH.cpp" />
+    <ClCompile Include="HospitalFee\FMGeneralReportbyClerk.cpp" />
+    <ClCompile Include="HospitalFee\FMInsuranceCost25A.cpp" />
+    <ClCompile Include="HospitalFee\FMInsuranceReport21a.cpp" />
+    <ClCompile Include="HospitalFee\FMNotDischargeTempMoneyPatientListReport.cpp" />
+    <ClCompile Include="HospitalFee\FMNotPayDischargeTempPatientListReport.cpp" />
+    <ClCompile Include="HospitalFee\FMOutpatientCostSynthesisbyDay.cpp" />
+    <ClCompile Include="HospitalFee\FMOutpatientCostSynthesisbyDept.cpp" />
+    <ClCompile Include="HospitalFee\FMOutpatientCostSynthesisbyLine.cpp" />
+    <ClCompile Include="HospitalFee\FMPaidPatientList.cpp" />
+    <ClCompile Include="HospitalFee\FMPayMoneyPatientListReport.cpp" />
+    <ClCompile Include="HospitalFee\FMRationStrengthGeneralByDayReport.cpp" />
+    <ClCompile Include="HospitalFee\FMRefundbyDepartment.cpp" />
+    <ClCompile Include="HospitalFee\FMRefundDetailbyItem.cpp" />
+    <ClCompile Include="HospitalFee\FMRefundPatientList.cpp" />
+    <ClCompile Include="HospitalFee\FMServiceMedicalIncomingOutgoingReport.cpp" />
+    <ClCompile Include="HospitalFee\FMSudungthuocBHYT20a.cpp" />
+    <ClCompile Include="HospitalFee\FMTempMoneyReport.cpp" />
+    <ClCompile Include="HospitalFee\FMTestPatientList.cpp" />
+    <ClCompile Include="HospitalFee\HFGeneralCostInsuraceReportTH25aDialog.cpp" />
+    <ClCompile Include="Pharmacy\PMBangGiaBanThuoc.cpp" />
+    <ClCompile Include="Pharmacy\PMBangKeChiTietNoPhaiThu.cpp" />
+    <ClCompile Include="Pharmacy\PMBangKeChiTietNoPhaiTra.cpp" />
+    <ClCompile Include="Pharmacy\PMBangKeNoPhaiThu.cpp" />
+    <ClCompile Include="Pharmacy\PMBangKeNoPhaiTra.cpp" />
+    <ClCompile Include="Pharmacy\PMBangKePhieuNhap.cpp" />
+    <ClCompile Include="Pharmacy\PMBaoCaoKiemKeKho.cpp" />
+    <ClCompile Include="Pharmacy\PMBaocaoxuatthuocchokhoatheodoituong.cpp" />
+    <ClCompile Include="Pharmacy\PMDonthuoctonghop.cpp" />
+    <ClCompile Include="Pharmacy\PMPrescriptionListReportDialog.cpp" />
+    <ClCompile Include="Pharmacy\PMPurchaseOrderReportDialog.cpp" />
+    <ClCompile Include="Pharmacy\PMReportConditionDialog.cpp" />
+    <ClCompile Include="Pharmacy\PMSDrugDetailBook.cpp" />
+    <ClCompile Include="Pharmacy\PMSExportSheetList.cpp" />
+    <ClCompile Include="Pharmacy\PMSServiceDrugUseofOutpatient.cpp" />
+    <ClCompile Include="Pharmacy\PMStockCardReportDialog.cpp" />
+    <ClCompile Include="Pharmacy\PMSummaryImportExportInstockForStocksReportDialog.cpp" />
+    <ClCompile Include="Lab\LIMSTestStaticsbyObject.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EMPrintForms.h" />
+    <ClInclude Include="HMSReportFormDialog.h" />
+    <ClInclude Include="ReportImage.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RMPrintForms.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Reception\RMGeneralExaminationFeeReport.h" />
+    <ClInclude Include="Reception\RMGeneralExaminationInformationReport.h" />
+    <ClInclude Include="Reception\RMRegistrationPatientListReport.h" />
+    <ClInclude Include="Examination\EMAgeDiseaseStatisticsReport.h" />
+    <ClInclude Include="Examination\EMBaoCaoTongHopThangTheoPK.h" />
+    <ClInclude Include="Examination\EMBCHangThangKhoaKhamC1_1.h" />
+    <ClInclude Include="Examination\EMDanhsachBNVaoVien.h" />
+    <ClInclude Include="Examination\EMDrugDeliveryListReport.h" />
+    <ClInclude Include="Examination\EMExaminationActivitiesReport.h" />
+    <ClInclude Include="Examination\EMExaminationListReport.h" />
+    <ClInclude Include="Examination\EMExaminationTreatmentActReport.h" />
+    <ClInclude Include="Examination\EMGeneralExaminationReportDialog.h" />
+    <ClInclude Include="Examination\EMInwardListReport.h" />
+    <ClInclude Include="Examination\EMInwardStatisticForDepartmentReport.h" />
+    <ClInclude Include="Examination\EMInwardStatisticReport.h" />
+    <ClInclude Include="Examination\EMObjectDiseaseStatisticsReport.h" />
+    <ClInclude Include="Examination\EMStatisticsGeneralPatientReport.h" />
+    <ClInclude Include="Examination\EMStatisticsMajorDiseasesReport.h" />
+    <ClInclude Include="Examination\EMWeekSynthesisReport.h" />
+    <ClInclude Include="HospitalFee\FMAdvancePaymentList.h" />
+    <ClInclude Include="HospitalFee\FMBookEntriesRegisterTableReport.h" />
+    <ClInclude Include="HospitalFee\FMCollectDetailbyItem.h" />
+    <ClInclude Include="HospitalFee\FMDanhsachBNNopTien_VP.h" />
+    <ClInclude Include="HospitalFee\FMDanhSachHoaDonThuPhi.h" />
+    <ClInclude Include="HospitalFee\FMGeneralCollectbyDepartment.h" />
+    <ClInclude Include="HospitalFee\FMGeneralInsuranceCost25ATH.h" />
+    <ClInclude Include="HospitalFee\FMGeneralReportbyClerk.h" />
+    <ClInclude Include="HospitalFee\FMInsuranceCost25A.h" />
+    <ClInclude Include="HospitalFee\FMInsuranceReport21a.h" />
+    <ClInclude Include="HospitalFee\FMNotDischargeTempMoneyPatientListReport.h" />
+    <ClInclude Include="HospitalFee\FMNotPayDischargeTempPatientListReport.h" />
+    <ClInclude Include="HospitalFee\FMOutpatientCostSynthesisbyDay.h" />
+    <ClInclude Include="HospitalFee\FMOutpatientCostSynthesisbyDept.h" />
+    <ClInclude Include="HospitalFee\FMOutpatientCostSynthesisbyLine.h" />
+    <ClInclude Include="HospitalFee\FMPaidPatientList.h" />
+    <ClInclude Include="HospitalFee\FMPayMoneyPatientListReport.h" />
+    <ClInclude Include="HospitalFee\FMRationStrengthGeneralByDayReport.h" />
+    <ClInclude Include="HospitalFee\FMRefundbyDepartment.h" />
+    <ClInclude Include="HospitalFee\FMRefundDetailbyItem.h" />
+    <ClInclude Include="HospitalFee\FMRefundPatientList.h" />
+    <ClInclude Include="HospitalFee\FMServiceMedicalIncomingOutgoingReport.h" />
+    <ClInclude Include="HospitalFee\FMSudungthuocBHYT20a.h" />
+    <ClInclude Include="HospitalFee\FMTempMoneyReport.h" />
+    <ClInclude Include="HospitalFee\FMTestPatientList.h" />
+    <ClInclude Include="HospitalFee\HFGeneralCostInsuraceReportTH25aDialog.h" />
+    <ClInclude Include="Pharmacy\PMBangGiaBanThuoc.h" />
+    <ClInclude Include="Pharmacy\PMBangKeChiTietNoPhaiThu.h" />
+    <ClInclude Include="Pharmacy\PMBangKeChiTietNoPhaiTra.h" />
+    <ClInclude Include="Pharmacy\PMBangKeNoPhaiThu.h" />
+    <ClInclude Include="Pharmacy\PMBangKeNoPhaiTra.h" />
+    <ClInclude Include="Pharmacy\PMBangKePhieuNhap.h" />
+    <ClInclude Include="Pharmacy\PMBaoCaoKiemKeKho.h" />
+    <ClInclude Include="Pharmacy\PMBaocaoxuatthuocchokhoatheodoituong.h" />
+    <ClInclude Include="Pharmacy\PMDonthuoctonghop.h" />
+    <ClInclude Include="Pharmacy\PMPrescriptionListReportDialog.h" />
+    <ClInclude Include="Pharmacy\PMPurchaseOrderReportDialog.h" />
+    <ClInclude Include="Pharmacy\PMReportConditionDialog.h" />
+    <ClInclude Include="Pharmacy\PMSDrugDetailBook.h" />
+    <ClInclude Include="Pharmacy\PMSExportSheetList.h" />
+    <ClInclude Include="Pharmacy\PMSServiceDrugUseofOutpatient.h" />
+    <ClInclude Include="Pharmacy\PMStockCardReportDialog.h" />
+    <ClInclude Include="Pharmacy\PMSummaryImportExportInstockForStocksReportDialog.h" />
+    <ClInclude Include="Lab\LIMSTestStaticsbyObject.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HMSReportForms1.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="HMSReportForms1.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
