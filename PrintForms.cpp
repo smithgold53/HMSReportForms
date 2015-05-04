@@ -8240,6 +8240,7 @@ typedef struct tagDrugItemData{
 		CString product_name;
 		CString product_uomname;
 		float	qty[365+1];
+		float	ttlqty;
 		int		qtywarning;
 		int		page;
 		int		col_filter;
@@ -8248,7 +8249,6 @@ typedef struct tagDrugItemData{
 
 void CPrintForms::PM_PrintDailyMaterialAndDrugsOfPatient(long nDocumentNo, CString szPrintType, CString szTransactionIDS){
 	CGuiMainFrame *pMF = (CGuiMainFrame *) AfxGetMainWnd();
-	
 	CReportSection* rptDetail = NULL;
 	CRecord rs(&pMF->m_db);
 	CRecord rsl(&pMF->m_db);
@@ -8422,7 +8422,10 @@ _T("   product_uomindex, product_name "), nDocumentNo, szWhere);
 		rsl.GetValue(_T("product_qtywarning"), dta.qtywarning);
 		nProduct_ID = dta.product_id;
 		for (int i =0; i <= 365; i++)
+		{
 			dta.qty[i] = 0;
+			dta.ttlqty = 0;
+		}
 
 		szSQL.Format(_T(" SELECT ") \
 _T("   trunc_date(hpo_orderdate) as orderdate,") \
@@ -8456,6 +8459,7 @@ _T(" ORDER BY trunc_date(hpo_orderdate) "), nDocumentNo, nProduct_ID, szWhere);
 				{
 					rsc.GetValue(_T("qtyissue"), tmpStr);
 					dta.qty[i] = str2float(tmpStr);
+					dta.ttlqty += dta.qty[i];
 					if (dta.qty[i] > 0)
 					{
 						dta.page = (int)floor(i/15.0);
@@ -8559,12 +8563,9 @@ _T(" ORDER BY trunc_date(hpo_orderdate) "), nDocumentNo, nProduct_ID, szWhere);
 				
 			}
 
-			
-
 			for (int j =0; j < 15; j++)
 				ttlqty += dta.qty[nPage*15+j];
-
-			
+		
 			if (ttlqty > 0 )
 			{
 				int x = 0;
@@ -8617,11 +8618,9 @@ _T(" ORDER BY trunc_date(hpo_orderdate) "), nDocumentNo, nProduct_ID, szWhere);
 
 				if(nLast >= nPage*15 && nLast <= nPage*15+15)
 				{
-					tmpStr.Format(_T("%.2f"), ttlqty);
+					tmpStr.Format(_T("%.2f"), dta.ttlqty);
 					rptDetail->SetValue(_T("32"), tmpStr);
 				}
-				
-
 			}
 
 		}

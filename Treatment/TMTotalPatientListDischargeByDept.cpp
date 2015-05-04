@@ -645,7 +645,7 @@ CString CTMTotalPatientListDischargeByDept::GetQueryString()
 		_T("	 CASE WHEN ho_type IN('S') THEN '\x110\x1ED1i t\x1B0\x1EE3ng \x64\x1ECB\x63h v\x1EE5' WHEN ho_type IN('C', 'I') THEN '\x110\x1ED1i t\x1B0\x1EE3ng \x62\x1EA3o hi\x1EC3m' WHEN ho_type IN('D', 'P') THEN '\x110\x1ED1i t\x1B0\x1EE3ng \x63h\xEDnh s\xE1\x63h' END loai,") \
 		_T("	 htr_recordno soba,") \
 		_T("     hd_docno hoso,") \
-		_T("	 hms_getroomname(hb_deptid, hb_roomid) buong,") \
+		_T("	 hms_getroomname(hb_deptid, last_value(hb_roomid) OVER (PARTITION BY hb_docno)) buong,") \
 		_T("     get_patientname(hd_docno) hovaten,") \
 		_T("     htr_dischargedate ngayra,") \
 		_T("     get_objectname(hd_object) doituong,") \

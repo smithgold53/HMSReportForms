@@ -381,7 +381,7 @@ void CPMPaidSupplierList::OnPrintPreviewSelect(){
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();
 	CReport rpt;
 	UpdateData(true);
-	CString szSQL, tmpStr;
+	CString szSQL, tmpStr, tmpStr2;
 	CString szMoney, szDate, szStorages;
 	CRecord rs(&pMF->m_db);
 	CReportSection *rptHeader, *rptDetail, *rptFooter;
@@ -437,10 +437,19 @@ void CPMPaidSupplierList::OnPrintPreviewSelect(){
 	{
 		rptDetail = rpt.AddDetail();
 		nIdx++;
+		tmpStr.IsEmpty();
 		rptDetail->SetValue(_T("1"), int2str(nIdx));
 		tmpStr.Format(rptDetail->GetValue(_T("2")), rs.GetValue(_T("nme")), rs.GetValue(_T("addr")), rs.GetValue(_T("contr")), rs.GetValue(_T("recno")));
 		rptDetail->SetValue(_T("2"), tmpStr);
-		tmpStr.Format(rptDetail->GetValue(_T("3")), rs.GetValue(_T("acc")), rs.GetValue(_T("banknme")), rs.GetValue(_T("bankbranch")), rs.GetValue(_T("code")));
+		if(!rs.GetValue(_T("acc")).IsEmpty())
+		{
+			tmpStr2.Format(_T("TK %s"), rs.GetValue(_T("acc")));
+		}
+		else
+		{
+			tmpStr2.Format(_T(""));
+		}
+		tmpStr.Format(rptDetail->GetValue(_T("3")), tmpStr2, rs.GetValue(_T("banknme")), rs.GetValue(_T("bankbranch")), rs.GetValue(_T("code")));
 		rptDetail->SetValue(_T("3"), tmpStr);
 		rs.GetValue(_T("total"), nAmt);
 		nTotalAmount+=nAmt;
@@ -515,6 +524,7 @@ void CPMPaidSupplierList::OnExportSelect(){
 	while (!rs.IsEOF())
 	{
 		nIdx++;
+		tmpStr.IsEmpty();
 		xls.SetCellText(nCol, nRow, int2str(nIdx), FMT_TEXT | FMT_RIGHT);
 		tmpStr = rs.GetValue(_T("nme"));
 		if (!rs.GetValue(_T("addr")).IsEmpty())
@@ -524,7 +534,8 @@ void CPMPaidSupplierList::OnExportSelect(){
 		if (!rs.GetValue(_T("recno")).IsEmpty())
 			tmpStr.AppendFormat(_T(" - %s"), rs.GetValue(_T("recno")));
 		xls.SetCellText(nCol + 1, nRow, tmpStr, FMT_TEXT | FMT_WRAPING);
-		tmpStr = rs.GetValue(_T("acc"));
+		if (!rs.GetValue(_T("acc")).IsEmpty())
+			tmpStr.Format(_T("TK %s"), rs.GetValue(_T("acc")));
 		if (!rs.GetValue(_T("banknme")).IsEmpty())
 			tmpStr.AppendFormat(_T(" - %s"), rs.GetValue(_T("banknme")));
 		if (!rs.GetValue(_T("bankbranch")).IsEmpty())

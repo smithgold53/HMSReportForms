@@ -326,7 +326,7 @@ long CFMStatisticPaidPatientList::OnGroupLoadData()
 		szWhere.Format(_T(" AND hfg_id='%s' "), m_szGroupKey);
 	}
 
-	szSQL.Format(_T("SELECT hfg_id as id, hfg_name as description FROM hms_fee_group ORDER BY hfg_id"));
+	szSQL.Format(_T("SELECT hfg_id as id, hfg_name as description FROM hms_fee_group WHERE substr(hfg_id, 1, 2) IN ('B1', 'B2', 'B3') ORDER BY hfg_id"));
 	m_wndGroup.DeleteAllItems(); 
 	int nCount = 0;
 	nCount = rs.ExecSQL(szSQL);
@@ -469,7 +469,7 @@ void CFMStatisticPaidPatientList::OnPrintPreviewSelect()
 	rpt.GetReportHeader()->SetValue(_T("ReportDate"), tmpStr);
 
 	CReportSection* rptDetail = NULL;
-	for(int i = 0; i <= 12; i++)
+	for(int i = 0; i < 12; i++)
 	{
 		nGroupTotal[i] = 0;
 		nTotal[i] = 0;
@@ -748,7 +748,7 @@ int CFMStatisticPaidPatientList::OnFMStatisticPaidPatientListListLoadData(){
 CString CFMStatisticPaidPatientList::GetQueryString()
 {
 	CHMSMainFrame *pMF = (CHMSMainFrame *)AfxGetMainWnd(); 
-	CString szSQL, szWhere, szLock;
+	CString szSQL, szWhere, szLock, szWDept;
 	szWhere.Empty();
 	
 	if (!m_szClerkKey.IsEmpty())
@@ -770,6 +770,8 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 		szWhere.AppendFormat(_T(" AND fac_posteddate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') "),
 			                 m_szFromDate, m_szToDate);
 	}
+
+
 
 	szSQL.Format(_T("SELECT deptid, ") \
 				_T("       docno, ") \
@@ -799,7 +801,7 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 				_T("        LEFT JOIN hms_doc d ON ( d.hd_docno = fi.hfe_docno ) ") \
 				_T("        WHERE     1=1 %s ") \
 				_T("                  AND fi.hfe_status = 'P' ") \
-				_T("                  AND d.hd_object = '7' ") \
+				_T("                  AND fi.hfe_objectid = '7' AND fe.hfe_object = '7' ") \
 				_T("        UNION ALL ") \
 				_T("        SELECT    fi.hfe_deptid AS deptid, ") \
 				_T("                  fi.hfe_docno AS docno, ") \
@@ -815,7 +817,7 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 				_T("        LEFT JOIN hms_doc d ON ( d.hd_docno = fi.hfe_docno ) ") \
 				_T("        WHERE     fac_posteddate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') %s") \
 				_T("                  AND fi.hfe_status = 'P' ") \
-				_T("                  AND d.hd_object = '7') ") \
+				_T("                  AND fi.hfe_objectid = '7' ) ") \
 				_T("GROUP  BY deptid, ") \
 				_T("          docno, pname,") \
 				_T("          receiptdate ") \

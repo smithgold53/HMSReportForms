@@ -548,7 +548,7 @@ void CFMDischargedUnpaidPatientListByDay::OnPrintSelect()
 
 	strArr.Add(_T("\x64\x1ECB\x63h v\x1EE5"));
 	strArr.Add(_T("\x42\x110 - \x43S - \x42H"));
-	for(int i = 0; i <= 12; i++)
+	for(int i = 0; i < 12; i++)
 	{
 		nGroupTotal[i] = 0;
 		nTotal[i] = 0;
@@ -564,7 +564,7 @@ void CFMDischargedUnpaidPatientListByDay::OnPrintSelect()
 				rptDetail = rpt.AddDetail(rpt.GetGroupFooter(1));
 				//TranslateString(_T("\x43\x1ED9ng kho\x61"), tmpStr);
 				rptDetail->SetValue(_T("TotalGroup"), _T("\x43\x1ED9ng ng\xE0y"));
-				for(int i = 8; i <= 12; i++)
+				for(int i = 8; i < 12; i++)
 				{
 					FormatCurrency(nGroupTotal[i], tmpStr);
 					szTemp.Format(_T("s%d"), i);
@@ -631,7 +631,7 @@ void CFMDischargedUnpaidPatientListByDay::OnPrintSelect()
 		rptDetail = rpt.AddDetail(rpt.GetGroupFooter(1));
 		//TranslateString(_T("\x43\x1ED9ng kho\x61"), tmpStr);
 		rptDetail->SetValue(_T("TotalGroup"), _T("\x43\x1ED9ng ng\xE0y"));
-		for(int i = 8; i <= 12; i++)
+		for(int i = 8; i < 12; i++)
 		{
 			FormatCurrency(nGroupTotal[i], tmpStr);
 			szTemp.Format(_T("s%d"), i);
@@ -643,7 +643,7 @@ void CFMDischargedUnpaidPatientListByDay::OnPrintSelect()
 
 	if (nTotal[8] > 0)
 	{
-		for(int i = 8; i <= 12; i++)
+		for(int i = 8; i < 12; i++)
 		{
 			FormatCurrency(nTotal[i], tmpStr);
 			szTemp.Format(_T("ss%d"), i);
@@ -755,7 +755,7 @@ void CFMDischargedUnpaidPatientListByDay::OnExportSelect()
 	long double nGroupTotal[10];
 	long double nTotal[10];
 	double nCost;
-	for(int i = 0; i <= 12; i++)
+	for(int i = 0; i < 10; i++)
 	{
 		nGroupTotal[i] = 0;
 		nTotal[i] = 0;

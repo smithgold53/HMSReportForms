@@ -248,7 +248,8 @@ int CPMSStockCardReportDialog::SetMode(int nMode)
  			SetDefaultValues(); 
  			break; 
  		}; 
-		m_wndExport.EnableWindow(false);
+		if (m_nPrintID > 1)
+			m_wndExport.EnableWindow(FALSE);
  		UpdateData(FALSE); 
  		return nOldMode; 
 }
@@ -449,6 +450,24 @@ void CPMSStockCardReportDialog::OnPrintSelect(){
 void CPMSStockCardReportDialog::OnExportSelect(){
 	_debug(_T("%s"), CString(typeid(this).name()));
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();
+	CExcel xls;
+	CString tmpStr;
+	int nSheet = 0;
+	xls.CreateSheet(1);
+	for (int i = 0; i < m_wndList.GetItemCount(); i++)
+	{
+		if (m_wndList.GetCheck(i))
+		{
+			if (nSheet > 0)
+				xls.AddSheet(_T(""));
+			xls.SetWorksheet(nSheet);
+			tmpStr = m_wndList.GetItemText(i, 1);
+			xls.SetSheetName(tmpStr);
+			xls.SetCellText(0, 0, int2str(i));
+			nSheet++;
+		}
+	}
+	xls.Save(_T("Exports\\multi_sheet.xls"));
 } 
 void CPMSStockCardReportDialog::OnCloseSelect(){
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();

@@ -1615,7 +1615,7 @@ CString CFMOutpatientInsuranceCost80A::GetQueryString(){
 				_T("         fe.hfe_docno as docno,") \
 				_T("         fe.hfe_invoiceno as invoiceno,") \
 				_T("         fe.hfe_group AS groupid,") \
-				_T("		 hcr_reldisease, hcr_admitdate, hcr_dischargedate, ") \
+				_T("		 hcr_reldisease, htr_admitdate, htr_dischargedate, ") \
 				_T("		 hcr_sumtreat, hcr_mainicd, hcr_maindisease, fi.hfe_date invoice_date,") \
 				_T("         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,") \
 				_T("         CASE WHEN fe.hfe_feegroup NOT IN ('HITECH_L', 'OPT_L') ") \
@@ -1635,7 +1635,7 @@ CString CFMOutpatientInsuranceCost80A::GetQueryString(){
 				_T("         fe.hfe_docno as docno,") \
 				_T("         fe.hfe_invoiceno as invoiceno,") \
 				_T("         fe.hfe_group AS groupid,") \
-				_T("		 hcr_reldisease, hcr_admitdate, hcr_dischargedate, ") \
+				_T("		 hcr_reldisease, htr_admitdate, htr_dischargedate, ") \
 				_T("		 hcr_sumtreat, hcr_mainicd, hcr_maindisease, fi.hfe_date invoice_date,") \
 				_T("         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,") \
 				_T("         CASE WHEN fe.hfe_feegroup IN ('HITECH_L', 'OPT_L') ") \
@@ -1665,8 +1665,8 @@ CString CFMOutpatientInsuranceCost80A::GetQueryString(){
 				_T("        (SELECT distinct ss_default FROM sys_sel WHERE ss_id='hms_insline' ") \
 				_T("		AND ss_code=CAST(hc_line AS NVARCHAR2(15))) AS linename,") \
 				_T("        (SELECT distinct hig_group FROM hms_insurance_group WHERE hig_idx= hc_groupid) AS insgroup,") \
-				_T("        TO_CHAR(hcr_admitdate, 'DD/MM/YYYY') AS admitdate,") \
-				_T("        TO_CHAR(hcr_dischargedate, 'DD/MM/YYYY') AS dischargedate,") \
+				_T("        TO_CHAR(htr_admitdate, 'DD/MM/YYYY') AS admitdate,") \
+				_T("        TO_CHAR(htr_dischargedate, 'DD/MM/YYYY') AS dischargedate,") \
 				_T("        hcr_sumtreat AS totaltreat,") \
 				_T("        hcr_mainicd,") \
 				_T("        hcr_maindisease AS icd10,") \
@@ -1697,7 +1697,7 @@ CString CFMOutpatientInsuranceCost80A::GetQueryString(){
 				_T("         fe.hfe_docno as docno,") \
 				_T("         fe.hfe_invoiceno as invoiceno,") \
 				_T("         fe.hfe_group AS groupid,") \
-				_T("		 hcr_reldisease, hcr_admitdate, hcr_dischargedate, ") \
+				_T("		 hcr_reldisease, htr_admitdate, htr_dischargedate, ") \
 				_T("		 hcr_sumtreat, hcr_mainicd, hcr_maindisease, fi.hfe_date invoice_date,") \
 				_T("         CASE WHEN SUBSTR(fe.hfe_group,1,2) IN('A1','A6') AND fe.hfe_group NOT IN ('A1400', 'A1500', 'A1600') THEN fe.hfe_inspaid ELSE 0 END AS drugfee,") \
 				_T("         CASE WHEN fe.hfe_group='A1400' THEN fe.hfe_inspaid ELSE 0 END AS drugfeek,") \
@@ -1732,7 +1732,7 @@ CString CFMOutpatientInsuranceCost80A::GetQueryString(){
 				_T("         fe.hfe_docno as docno,") \
 				_T("         fe.hfe_invoiceno as invoiceno,") \
 				_T("         fe.hfe_group AS groupid,") \
-				_T("		 hcr_reldisease, hcr_admitdate, hcr_dischargedate, ") \
+				_T("		 hcr_reldisease, htr_admitdate, htr_dischargedate, ") \
 				_T("		 hcr_sumtreat, hcr_mainicd, hcr_maindisease, fi.hfe_date invoice_date,") \
 				_T("		 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,") \
 				_T("         fe.hfe_cost AS cost,") \
@@ -1756,7 +1756,7 @@ CString CFMOutpatientInsuranceCost80A::GetQueryString(){
 				_T(" WHERE ho_type IN('I','C') AND LENGTH(hd_cardno) > 1 ") \
 				_T(" %s") \
 				_T(" GROUP BY hd_docno, hp_surname, hp_midname, hp_firstname, hp_birthdate, hp_sex, hd_cardno, hd_insline, ") \
-				_T("		  hc_groupid, hc_line, hd_insline, hc_regcode, hcr_mainicd, hcr_maindisease, hcr_admitdate, hcr_dischargedate, ") \
+				_T("		  hc_groupid, hc_line, hd_insline, hc_regcode, hcr_mainicd, hcr_maindisease, htr_admitdate, htr_dischargedate, ") \
 				_T("		  hcr_sumtreat, hp_provid, hp_distid, hp_villid, hd_insregdate, hd_Insexpdate, hcr_reldisease, hi_name, ") \
 				_T("		  hd_emergency, deptid, hd_admitdept, invoice_date") \
 				_T(" HAVING SUM(cost) > 0") \
