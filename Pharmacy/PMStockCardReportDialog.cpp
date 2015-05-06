@@ -450,24 +450,175 @@ void CPMSStockCardReportDialog::OnPrintSelect(){
 void CPMSStockCardReportDialog::OnExportSelect(){
 	_debug(_T("%s"), CString(typeid(this).name()));
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();
+	UpdateData(true);
 	CExcel xls;
-	CString tmpStr;
-	int nSheet = 0;
+	CRecord rs(&pMF->m_db);
+	CString szSQL, tmpStr, szWhere, szGroupBy, szCategory;
+	int nSheet = 0, nID = 0, nIdx = 1, nRow = 0;
+	double nOnhand = 0, nTmp = 0, nTotalImport = 0, nTotalExport = 0;
 	xls.CreateSheet(1);
 	for (int i = 0; i < m_wndList.GetItemCount(); i++)
 	{
 		if (m_wndList.GetCheck(i))
 		{
+			nIdx = 1;
 			if (nSheet > 0)
 				xls.AddSheet(_T(""));
 			xls.SetWorksheet(nSheet);
 			tmpStr = m_wndList.GetItemText(i, 1);
+			nID = ToInt(m_wndList.GetItemText(i, 5));
 			xls.SetSheetName(tmpStr);
-			xls.SetCellText(0, 0, int2str(i));
+			//Write Data
+			//Write Header
+			xls.SetCellMergedColumns(0, 0, 3);
+			xls.SetCellMergedColumns(0, 1, 3);
+			xls.SetCellMergedColumns(0, 2, 3);
+			xls.SetCellMergedColumns(0, 3, 9);
+			xls.SetCellMergedColumns(0, 4, 9);
+			xls.SetColumnWidth(0, 8);
+			xls.SetColumnWidth(3, 15);
+			xls.SetCellText(0, 0, pMF->m_szHealthService, 4098, true);
+			xls.SetCellText(0, 1, pMF->m_szHospitalName, 4098, true);
+			tmpStr = m_wndStock.GetCurrent(1);
+			xls.SetCellText(0, 2, tmpStr, 4098);
+			xls.SetCellText(0, 3, _T("TH\x1EBA KHO"), 4098, true);
+			tmpStr.Format(_T("T\x1EEB ng\xE0y %s \x111\x1EBFn ng\xE0y %s")
+				, CDate::Convert(m_szFromDate, yyyymmdd, ddmmyyyy), CDate::Convert(m_szToDate, yyyymmdd, ddmmyyyy));
+			xls.SetCellText(0, 4, tmpStr, 4098);			
+			//Qty onhand
+			xls.SetCellText(0, 5, _T("T\x1ED3n \x111\x1EA7u k\x1EF3: "), FMT_TEXT);
+			if (m_bByProductLine)
+				szWhere.Format(_T(" AND product_item_id = %d"), nID);
+			else
+				szWhere.Format(_T(" AND product_id = %d"), nID);
+			
+			szSQL.Format(_T(" SELECT coalesce(sum(impqty-expqty), 0) as onhand") \
+				_T(" FROM") \
+				_T(" (") \
+				_T(" 	SELECT impstockid, impdate as iodate, sitemid, impqty, 0 as expqty") \
+				_T(" 	FROM MIV") \
+				_T(" 	UNION ALL") \
+				_T(" 	SELECT expstockid, expdate, sitemid, 0, expqty") \
+				_T(" 	FROM MEV") \
+				_T(" ) tbl") \
+				_T(" LEFT JOIN m_productitem_view ON(sitemid=product_item_id)") \
+				_T(" WHERE impstockid=%d") \
+				_T(" 	AND iodate < cast_string2timestamp('%s') ") \
+				_T(" 	%s"), ToInt(m_szStockKey), m_szFromDate, szWhere);
+			rs.ExecSQL(szSQL);
+			if(!rs.IsEOF())
+				rs.GetValue(_T("onhand"), nOnhand);
+			xls.SetCellText(1, 5, double2str(nOnhand), FMT_NUMBER1);
+
+			//Stock card
+			xls.SetCellMergedRows(0, 6, 2);
+			xls.SetCellMergedRows(3, 6, 2);
+			xls.SetCellMergedRows(4, 6, 2);
+			xls.SetCellMergedRows(8, 6, 2);
+			xls.SetCellMergedColumns(1, 6, 2);
+			xls.SetCellMergedColumns(5, 6, 3);
+			xls.SetCellText(0, 6, _T("STT"), 4098, true);
+			xls.SetCellText(1, 6, _T("\x43h\x1EE9ng t\x1EEB"), 4098, true);
+			xls.SetCellText(1, 7, _T("S\x1ED1 hi\x1EC7u"), 4098, true);
+			xls.SetCellText(2, 7, _T("Ng\xE0y"), 4098, true);
+			xls.SetCellText(3, 6, _T("Tr\xED\x63h y\x1EBFu"), 4098, true);
+			xls.SetCellText(4, 6, _T("Ng\xE0y \x78u\x1EA5t nh\x1EADp"), 4098, true);
+			xls.SetCellText(5, 6, _T("S\x1ED1 l\x1B0\x1EE3ng"), 4098, true);
+			xls.SetCellText(5, 7, _T("Nh\x1EADp"), 4098, true);
+			xls.SetCellText(6, 7, _T("\x58u\x1EA5t"), 4098, true);
+			xls.SetCellText(7, 7, _T("T\x1ED3n"), 4098, true);
+			xls.SetCellText(8, 6, _T("K\xFD nh\x1EADn"), 4098, true);
+			if (m_bByProductLine)
+				szGroupBy = _T(", product_item_id");
+			szSQL.Format(_T(" SELECT impstockid,") \
+						_T("   expstockid,") \
+						_T("   iodate AS invoicedate,") \
+						_T("   Cast_Timestamp2Date(orderdate) AS orderdate,") \
+						_T("   invoiceno,") \
+						_T("   invoiceid,") \
+						_T("   SUM(qty)     AS qty,") \
+						_T("   product_id       AS itemid,") \
+						_T("   deptid,") \
+						_T("   iotype,") \
+						_T("   get_doctype(iotype) as iotypename,") \
+						_T("   category,") \
+						_T("   descr") \
+						_T(" FROM") \
+						_T("   (SELECT impstockid,") \
+						_T("	 expstockid,") \
+						_T("	 invoiceid,") \
+						_T("     impdate    AS iodate,") \
+						_T("     impinvoice AS invoiceno,") \
+						_T("	 orderdate,") \
+						_T("     sitemid,") \
+						_T("     impqty AS qty,") \
+						_T("	 deptid,") \
+						_T("     iotype,") \
+						_T("     CAST('I' AS NVARCHAR2(1)) as category,") \
+						_T("	 descr") \
+						_T("   FROM MIV") \
+						_T("   UNION ALL") \
+						_T("   SELECT expstockid,") \
+						_T("	 impstockid,") \
+						_T("	 invoiceid,") \
+						_T("     expdate,") \
+						_T("     expinvoice,") \
+						_T("	 orderdate,") \
+						_T("     sitemid,") \
+						_T("     expqty,") \
+						_T("	 deptid,") \
+						_T("     iotype,") \
+						_T("     category,") \
+						_T("	 descr") \
+						_T("   FROM MEV") \
+						_T("   ) iotbl") \
+						_T(" LEFT JOIN m_productitem_view ON(product_item_id=sitemid)") \
+						_T(" WHERE qty > 0") \
+						_T(" AND impstockid=%d") \
+						_T(" AND iodate BETWEEN cast_string2timestamp('%s') AND cast_string2timestamp('%s:59') ") \
+						_T(" %s") \
+						_T(" GROUP BY impstockid, expstockid, iodate, orderdate, invoiceno, ") \
+						_T("		  product_id, iotype, category, deptid, invoiceid, descr %s") \
+						_T(" ORDER BY invoicedate"), ToInt(m_szStockKey), m_szFromDate, m_szToDate.Left(16), szWhere, szGroupBy);
+			rs.ExecSQL(szSQL);
+			nRow = 8;
+			while (!rs.IsEOF())
+			{
+				xls.SetCellText(0, nRow, int2str(nIdx++), FMT_TEXT | FMT_RIGHT);
+				xls.SetCellText(1, nRow, rs.GetValue(_T("invoiceno")), 4098);
+				rs.GetValue(_T("orderdate"), tmpStr);
+				xls.SetCellText(2, nRow, CDate::Convert(tmpStr, yyyymmdd, ddmmyyyy));
+				xls.SetCellText(3, nRow, rs.GetValue(_T("descr")), FMT_TEXT);
+				rs.GetValue(_T("invoicedate"), tmpStr);
+				xls.SetCellText(4, nRow, CDate::Convert(tmpStr, yyyymmdd, ddmmyyyy));
+				rs.GetValue(_T("category"), szCategory);
+				rs.GetValue(_T("qty"), nTmp);
+				if (szCategory == _T("I"))
+				{
+					nOnhand += nTmp;
+					nTotalImport += nTmp;
+					xls.SetCellText(5, nRow, double2str(nTmp), FMT_NUMBER1);
+				}
+				else
+				{
+					nOnhand -= nTmp;
+					nTotalExport += nTmp;
+					xls.SetCellText(6, nRow, double2str(nTmp), FMT_NUMBER1);
+				}
+				xls.SetCellText(7, nRow, double2str(nOnhand), FMT_NUMBER1);
+				nRow++;
+				rs.MoveNext();
+			}
+			xls.SetCellMergedColumns(0, nRow, 5);
+			xls.SetCellText(0, nRow, _T("T\x1ED5ng \x63\x1ED9ng: "), 4098, true);
+			xls.SetCellText(5, nRow, double2str(nTotalImport), FMT_NUMBER1, true);
+			xls.SetCellText(6, nRow, double2str(nTotalExport), FMT_NUMBER1, true);
+			xls.SetCellText(7, nRow, double2str(nOnhand), FMT_NUMBER1, true);
 			nSheet++;
 		}
 	}
-	xls.Save(_T("Exports\\multi_sheet.xls"));
+	xls.SetActiveSheet(0);
+	xls.Save(_T("Exports\\The kho.xls"));
 } 
 void CPMSStockCardReportDialog::OnCloseSelect(){
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();

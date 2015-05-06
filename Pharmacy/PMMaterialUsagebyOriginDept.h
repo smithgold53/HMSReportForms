@@ -43,7 +43,7 @@ public:
 	CGuiDateTimeCtrl	m_wndToDate;
 	CGuiLabel		m_wndTypeLabel;
 	CGuiComboBox	m_wndType;
-	CGuiCheckBox	m_wndPaid;
+	CGuiCheckBox	m_wndInPatient;
 	CGuiButton		m_wndPrint;
 	CGuiButton		m_wndExport;
 	CGuiListCtrl	m_wndObjectList;
@@ -54,7 +54,7 @@ public:
 	CString	m_szFromDate;
 	CString	m_szToDate;
 	CString	m_szTypeKey;
-	BOOL	m_bPaid;
+	BOOL	m_bInPatient;
 	//void			OnYearChange(); 
 	//void			OnYearSetfocus(); 
 	//void			OnYearKillfocus(); 
@@ -84,7 +84,8 @@ public:
 	long			OnDeptListLoadData(); 
 	void			OnDeptListSelectChange(int nOldItem, int nNewItem); 
 	void			OnDeptListDblClick(); 
-	int			OnDeptListDeleteItem(); 
+	int			OnDeptListDeleteItem();
+	void		OnInPatientSelect();
 	CPMMaterialUsagebyOriginDept(CWnd *pParent);
 	~CPMMaterialUsagebyOriginDept();
 	void OnCreateComponents();

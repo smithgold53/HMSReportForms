@@ -1575,6 +1575,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1593,6 +1594,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1611,6 +1613,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1630,6 +1633,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1648,6 +1652,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1668,6 +1673,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid  amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1694,6 +1700,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 		_T("                   f.hfe_inspaid amount ") \
 		_T("         FROM      hms_fee f ") \
 		_T("		 LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+		_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 		_T("		 %s") \
 		_T("         LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 		_T("         LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \
@@ -1715,6 +1722,7 @@ CString CFMInsuranceReport21a1::GetQueryString(){
 	_T("           f.hfe_inspaid amount ") \
 	_T(" FROM      hms_fee f ") \
 	_T(" LEFT JOIN hms_doc ON (hd_docno = hfe_docno) ") \
+	_T("		 LEFT JOIN hms_card ON (hc_patientno = hd_patientno AND hc_idx = hd_cardidx)") \
 	_T(" %s") \
 	_T(" LEFT JOIN hms_object ON ( hfe_object = ho_id ) ") \
 	_T(" LEFT JOIN hms_fee_invoice i ON ( f.hfe_docno = i.hfe_docno ") \

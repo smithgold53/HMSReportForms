@@ -1971,7 +1971,10 @@ void CPMSReportConditionDialog::OnPrintImportExportAndInstockForDetailMoneyRepor
 	CString tmpStr, szDate, szSysDate, szSQL, szWhere, szOrderby, szPrice, szCondition, szRptName, szStockSel;
 	//szRptName.Format(_T("Reports/HMS/PMS_SUMMARYIMPORTEXPORTINSTOCKFORMONEYREPORT.RPT"));
 	if (pMF->GetModuleID() == _T("PM"))
-		szRptName.Format(_T("Reports/HMS/PM_BAOCAOXUATNHAPCHUNG.RPT"));
+		if (m_szStockKey == _T("4"))
+			szRptName.Format(_T("Reports/HMS/PM_BAOCAOXUATNHAPCHUNG_DONGY.RPT"));
+		else
+			szRptName.Format(_T("Reports/HMS/PM_BAOCAOXUATNHAPCHUNG.RPT"));
 	else
 		szRptName.Format(_T("Reports/HMS/MA_BAOCAOXUATNHAPCHUNG.RPT"));
 	if(!rpt.Init(szRptName,true) )
@@ -2014,6 +2017,7 @@ void CPMSReportConditionDialog::OnPrintImportExportAndInstockForDetailMoneyRepor
 		szOrderby.Format(_T("ORDER BY idx1,name, unit"));
 	else if (m_szSort == _T("T"))
 		szOrderby.Format(_T("ORDER BY idx2,name, unit"));
+
 
 	szCondition = _T("product_taxprice");
 	if (m_bBillPrice)

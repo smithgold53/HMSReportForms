@@ -1072,7 +1072,8 @@ CString CFMDischargedUnpaidPatientList::GetQueryString(){
 				_T("                   LEFT JOIN hms_clinical_record ON ( hcr_docno = d.hfe_docno ) ") \
 				_T("				   LEFT JOIN hms_fee_approve a ON ( a.hfe_docno = d.hfe_docno )") \
 				_T("                   WHERE     1 = 1 ") \
-				_T("                             AND hcr_status = 'T' AND d.hfe_status NOT IN ('C', 'R')  AND a.hfe_status NOT IN ('A', 'P') OR a.hfe_status IS NULL ") \
+				_T("                             AND hcr_status = 'T' AND d.hfe_status NOT IN ('C', 'R')  ") \
+				_T("							 AND a.hfe_status = 'A' OR a.hfe_status IS NULL ") \
 				_T("                             AND dc.hd_object = '7' ) ") \
 				_T("           WHERE  ngayra BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') %s") \
 				_T("           GROUP  BY docno, ") \

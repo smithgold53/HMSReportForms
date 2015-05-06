@@ -112,6 +112,7 @@ void CPMSDepartmentUsageinDetail::OnCreateComponents(){
 	m_wndItemGroup.Create(this,95, 90, 570, 115); 
 	m_wndGroupbyDept.Create(this, _T("Group by Dept"), 5, 550, 110, 575);
 	m_wndGroupbyType.Create(this, _T("Group by Type"), 115, 550, 210, 575);
+	m_wndImportPrice.Create(this, _T("Import Price"), 215, 550, 315, 575);
 	m_wndPrintPreview.Create(this, _T("&Print Preview"), 395, 550, 490, 575);
 	m_wndExport.Create(this, _T("&Export"), 495, 550, 575, 575);
 	m_wndDepartmentList.Create(this,10, 120, 570, 330); 
@@ -191,6 +192,7 @@ void CPMSDepartmentUsageinDetail::OnDoDataExchange(CDataExchange* pDX){
 	DDX_TextEx(pDX, m_wndItemGroup.GetDlgCtrlID(), m_szItemGroupKey);
 	DDX_Check(pDX, m_wndGroupbyDept.GetDlgCtrlID(), m_bGroupbyDept);
 	DDX_Check(pDX, m_wndGroupbyType.GetDlgCtrlID(), m_bGroupbyType);
+	DDX_Check(pDX, m_wndImportPrice.GetDlgCtrlID(), m_bImportPrice);
 
 }
 void CPMSDepartmentUsageinDetail::SetDefaultValues(){
@@ -201,7 +203,7 @@ void CPMSDepartmentUsageinDetail::SetDefaultValues(){
 	m_szItemGroupKey.Empty();
 	m_bStockCheck = FALSE;
 	m_bDeptCheck = FALSE;
-
+	m_bImportPrice = FALSE;
 }
 int CPMSDepartmentUsageinDetail::SetMode(int nMode){
  		int nOldMode = GetMode();
@@ -950,7 +952,8 @@ void CPMSDepartmentUsageinDetail::OnExportSelect(){
 
 CString CPMSDepartmentUsageinDetail::GetQueryString(){
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();
-	CString szSQL, szWhere, szWhere1, szWhere2, szWhere3, szWhere31, szWhere4, szWhere5, szTemp, szDept, szStorageStr, szField, szGroupBy, szOrderBy;
+	CString szSQL, szWhere, szWhere1, szWhere2, szWhere3, szWhere31, szWhere4, szWhere5, szTemp, szDept, szStorageStr;
+	CString szPrice, szField, szGroupBy, szOrderBy;
 	for (int i = 0; i < m_wndDepartmentList.GetItemCount(); i++)
 	{
 		if (m_wndDepartmentList.GetCheck(i))
@@ -1032,32 +1035,34 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 		szGroupBy.Format(_T("product_groupid, product_groupname,"));
 		szOrderBy.Format(_T("product_groupid, product_groupname,"));
 	}
-
+	szPrice = _T("price");
+	if (m_bImportPrice)
+		szPrice = _T("product_unitprice");
 	szSQL.Format(_T(" SELECT cat,") \
 				_T("   product_id,") \
-				_T("   product_name                     AS pname,") \
-				_T("   price,") \
+				_T("   product_name AS pname,") \
+				_T("   %s as price,") \
 				_T("   %s") \
 				_T("   product_uomname,") \
 				_T("   Sum(solqty)                      AS solqty,") \
-				_T("   Sum(solqty)*price    AS solamt,") \
+				_T("   Sum(solqty)*%s    AS solamt,") \
 				_T("   Sum(polqty)                      AS polqty,") \
-				_T("   Sum(polqty)*price    AS polamt,") \
+				_T("   Sum(polqty)*%s    AS polamt,") \
 				_T("   Sum(solinsqty)                   AS solinsqty,") \
-				_T("   Sum(solinsqty)*price AS solinsamt,") \
+				_T("   Sum(solinsqty)*%s AS solinsamt,") \
 				_T("   Sum(othinsqty)                   AS othinsqty,") \
-				_T("   Sum(othinsqty)*price AS othinsamt,") \
+				_T("   Sum(othinsqty)*%s AS othinsamt,") \
 				_T("   Sum(serqty)                      AS serqty,") \
-				_T("   Sum(serqty)*price    AS seramt,") \
+				_T("   Sum(serqty)*%s    AS seramt,") \
 				_T("   Sum(othqty)                      AS othqty,") \
-				_T("   Sum(othqty)*price    AS othamt,") \
+				_T("   Sum(othqty)*%s    AS othamt,") \
 				_T("   Sum(solqty+polqty+solinsqty+othinsqty+serqty") \
 				_T("       +othqty)                     AS ttlqty,") \
 				_T("   Sum(solqty+polqty+solinsqty+othinsqty+serqty") \
-				_T("       +othqty)*price   AS ttlamt") \
+				_T("       +othqty)*%s   AS ttlamt") \
 				_T(" FROM   (SELECT") \
 				_T("   'Delivery' as cat,") \
-				_T("   hpol_product_id,") \
+				_T("   hpol_product_item_id,") \
 				_T("   price,") \
 				_T("   deptid,") \
 				_T("   product_groupid, product_groupname,") \
@@ -1068,7 +1073,7 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("   Sum(serqty)    AS serqty,") \
 				_T("   Sum(otherqty)  AS othqty") \
 				_T(" FROM   (SELECT") \
-				_T("           hpol_product_id,") \
+				_T("           hpol_product_item_id,") \
 				_T("		   hpol_unitprice AS price,") \
 				_T("           hpo_object_id,") \
 				_T("		   hpo_deptid deptid,") \
@@ -1098,11 +1103,11 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("		 LEFT JOIN m_transaction ON (mt_transaction_id = hpo_transaction_id)") \
 				_T("		 LEFT JOIN m_productitem_view ON (product_item_id = hpol_product_item_id)") \
 				_T("         WHERE  hpo_orderstatus = 'A' AND hpo_ordertype <> 'C' %s) tbl1") \
-				_T(" GROUP  BY hpol_product_id, price, deptid, product_groupid, product_groupname") \
+				_T(" GROUP  BY hpol_product_item_id, price, deptid, product_groupid, product_groupname") \
 				_T(" UNION ALL") \
 				_T(" SELECT") \
 				_T("   'Delivery' as cat,") \
-				_T("   hpol_product_id,") \
+				_T("   hpol_product_item_id,") \
 				_T("   price,") \
 				_T("   deptid,") \
 				_T("   product_groupid, product_groupname,") \
@@ -1113,7 +1118,7 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("   Sum(serqty)    AS serqty,") \
 				_T("   Sum(otherqty)  AS otherqty") \
 				_T(" FROM   (SELECT") \
-				_T("           hpol_product_id,") \
+				_T("           hpol_product_item_id,") \
 				_T("		   hpol_unitprice AS price,") \
 				_T("           hpo_object_id,") \
 				_T("		   hpo_deptid deptid,") \
@@ -1144,7 +1149,7 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("         WHERE  hpo_orderstatus = 'A' %s ") \
 				_T("		 UNION ALL ") \
 				_T("		 SELECT") \
-				_T("           hpol_product_id,") \
+				_T("           hpol_product_item_id,") \
 				_T("		   hpol_unitprice AS price,") \
 				_T("           hpo_object_id,") \
 				_T("		   hpo_deptid deptid,") \
@@ -1174,11 +1179,11 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("		 LEFT JOIN m_transaction ON (mt_transaction_id = hpo_transaction_id)") \
 				_T("		 LEFT JOIN m_productitem_view ON (product_item_id = hpol_product_item_id)") \
 				_T("         WHERE  hpo_orderstatus = 'A' AND hpo_ordertype = 'C' %s) tbl") \
-				_T(" GROUP  BY hpol_product_id, price, deptid, product_groupid,product_groupname") \
+				_T(" GROUP  BY hpol_product_item_id, price, deptid, product_groupid,product_groupname") \
 				_T(" UNION ALL") \
 				_T(" SELECT") \
 				_T("   'Delivery' as cat,") \
-				_T("   mtl_product_id,") \
+				_T("   mtl_product_item_id,") \
 				_T("   mtl_saleprice,") \
 				_T("   mt_department_to_id deptid,") \
 				_T("   product_groupid, product_groupname,") \
@@ -1192,14 +1197,14 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T(" LEFT JOIN m_transactionline ON (mt_transaction_id = mtl_transaction_id)") \
 				_T(" LEFT JOIN m_productitem_view ON (product_item_id = mtl_product_item_id)") \
 				_T(" WHERE mt_doctype = 'DDO' AND mt_status = 'A' %s") \
-				_T(" GROUP BY mtl_product_id, mtl_saleprice, mt_department_to_id, product_groupid, product_groupname") \
+				_T(" GROUP BY mtl_product_item_id, mtl_saleprice, mt_department_to_id, product_groupid, product_groupname") \
 				_T(" UNION ALL") \
-				_T(" SELECT cat, sol_product_id, sol_unitprice, deptid, product_groupid, product_groupname,") \
+				_T(" SELECT cat, sol_product_item_id, sol_unitprice, deptid, product_groupid, product_groupname,") \
 				_T(" 0, 0, 0, 0, sum(serqty) serqty, 0") \
 				_T(" FROM(") \
 				_T("	SELECT") \
 				_T("		'Delivery' as cat,") \
-				_T("		sol_product_id,") \
+				_T("		sol_product_item_id,") \
 				_T("		sol_unitprice,") \
 				_T("		case when NVL(so_partner_type_id, 'W') = 'W' then hd_admitdept else so_partneraddress end deptid,") \
 				_T("		product_groupid, product_groupname,") \
@@ -1213,12 +1218,12 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("	LEFT JOIN hms_doc ON (hd_docno = so_docno)") \
 				_T("	LEFT JOIN sale_orderline ON (so_sale_order_id = sol_sale_order_id)") \
 				_T("	LEFT JOIN m_productitem_view ON (product_item_id = sol_product_item_id)") \
-				_T("	WHERE so_doctype = 'SOO' AND so_status = 'A' AND sol_product_id > 0 %s)") \
+				_T("	WHERE so_doctype = 'SOO' AND so_status = 'A' AND sol_product_item_id > 0 %s)") \
 				_T(" WHERE 1=1 %s") \
-				_T(" GROUP BY sol_product_id, sol_unitprice, deptid, product_groupid, product_groupname ") \
+				_T(" GROUP BY sol_product_item_id, sol_unitprice, deptid, product_groupid, product_groupname ") \
 				_T(" UNION ALL ") \
 				_T(" SELECT 'Return' AS cat, ") \
-				_T("        hpol_product_id, ") \
+				_T("        hpol_product_item_id, ") \
 				_T("        price, ") \
 				_T("        deptid, ") \
 				_T("        product_groupid, ") \
@@ -1229,7 +1234,7 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("        SUM(othinsqty) AS othinsqty, ") \
 				_T("        SUM(serqty) AS serqty, ") \
 				_T("        SUM(otherqty) AS othqty ") \
-				_T(" FROM  (SELECT    hpol_product_id, ") \
+				_T(" FROM  (SELECT    hpol_product_item_id, ") \
 				_T("                  hpol_unitprice AS price, ") \
 				_T("                  hpo_object_id, ") \
 				_T("                  hpo_deptid deptid, ") \
@@ -1260,7 +1265,7 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("        LEFT JOIN m_transaction ON ( mt_transaction_id = hpol_retorder_id ) ") \
 				_T("        WHERE     hpol_qtyreverse > 0 AND mt_status = 'A' %s") \
 				_T("        UNION ALL ") \
-				_T("        SELECT    product_id, ") \
+				_T("        SELECT    product_item_id, ") \
 				_T("                  hpol_unitprice AS price, ") \
 				_T("                  hpo_object_id, ") \
 				_T("                  po.hpo_deptid deptid, ") \
@@ -1290,16 +1295,18 @@ CString CPMSDepartmentUsageinDetail::GetQueryString(){
 				_T("        LEFT JOIN hms_pharmareturnorder_line ON ( hpo_pharmareturnorder_id = hpol_pharmareturnorder_id ) ") \
 				_T("        LEFT JOIN m_productitem_view ON ( hpol_product_item_id = product_item_id ) ") \
 				_T("        WHERE     hpol_qtyreturn > 0 AND hpo_status = 'A' %s) ") \
-				_T(" GROUP  BY hpol_product_id,price,deptid,product_groupid,product_groupname)") \
-				_T(" LEFT JOIN m_product_view ON (product_id=hpol_product_id)") \
+				_T(" GROUP  BY hpol_product_item_id,price,deptid,product_groupid,product_groupname)") \
+				_T(" LEFT JOIN m_productitem_view ON (product_item_id=hpol_product_item_id)") \
 				_T(" WHERE 1=1 %s") \
 				_T(" GROUP  BY cat,") \
 				_T("		   product_id,") \
 				_T("           product_name,") \
 				_T("           product_saleprice2,") \
-				_T("		   product_uomname, %s price") \
-				_T(" ORDER  BY cat, %s product_name "), szField, szWhere1, szWhere2, szWhere2, 
-				szWhere1, szWhere3, szWhere31, szWhere4, szWhere5, szWhere, szGroupBy, szOrderBy);
+				_T("		   product_uomname, %s %s") \
+				_T(" ORDER  BY cat, %s product_name "), szPrice, szField, 
+				szPrice, szPrice, szPrice, szPrice, szPrice, szPrice, szPrice
+				,szWhere1, szWhere2, szWhere2, 
+				szWhere1, szWhere3, szWhere31, szWhere4, szWhere5, szWhere, szGroupBy, szPrice, szOrderBy);
 _fmsg(_T("%s"), szSQL);
 	return szSQL;
 	//Tra lai
@@ -1318,7 +1325,9 @@ _fmsg(_T("%s"), szSQL);
 				//_T("         WHERE  mtl_qtyorder>0") \
 				//_T("                AND mt_status='A'") \
 				//_T("                AND mt_doctype IN ('DRO') %s)")
-}BEGIN_MESSAGE_MAP(CPMSDepartmentUsageinDetail, CGuiView)
+}
+
+BEGIN_MESSAGE_MAP(CPMSDepartmentUsageinDetail, CGuiView)
 ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 

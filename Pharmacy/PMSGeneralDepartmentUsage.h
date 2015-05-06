@@ -40,6 +40,7 @@ public:
 	CGuiLabel		m_wndItemGroupLabel;
 	CGuiComboBox	m_wndItemGroup;
 	CGuiCheckBox	m_wndOnlyDDO;
+	CGuiCheckBox	m_wndImportPrice;
 	CGuiButton		m_wndPrintPreview;
 	CGuiButton		m_wndExport;
 	CString	m_szFromDate;
@@ -47,6 +48,7 @@ public:
 	CString	m_szStorageKey;
 	CString	m_szItemGroupKey;
 	BOOL	m_bOnlyDDO;
+	BOOL	m_bImportPrice;
 	//void			OnFromDateChange(); 
 	//void			OnFromDateSetfocus(); 
 	//void			OnFromDateKillfocus(); 

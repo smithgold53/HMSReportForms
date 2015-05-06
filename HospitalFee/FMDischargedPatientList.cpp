@@ -1275,6 +1275,6 @@ CString CFMDischargedPatientList::GetQueryString2(){
 				_T("          ngayra, ") \
 				_T("          docno"), m_szFromDate, m_szToDate, szWhere, m_szFromDate, m_szToDate, szWhere);
     
-	_msg(_T("%s"), szSQL);
+	_fmsg(_T("%s"), szSQL);
 	return szSQL;
 }

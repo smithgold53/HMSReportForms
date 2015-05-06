@@ -1238,7 +1238,6 @@ CString CFMDischargedPaidPatientList::GetQueryString(){
 				_T("ORDER     BY deptid, ") \
 				_T("             docno "), szWhere1, m_szFromDate, m_szToDate, m_szFromDate, m_szToDate, szWhere);
 
-
 	_fmsg(_T("%s"), szSQL);
 	return szSQL;
 }

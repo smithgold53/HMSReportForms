@@ -90,6 +90,7 @@ void CPMSGeneralDepartmentUsage::OnCreateComponents(){
 	m_wndItemGroupLabel.Create(this, _T("Item Group"), 10, 60, 90, 85);
 	m_wndItemGroup.Create(this,95, 60, 570, 85); 
 	m_wndOnlyDDO.Create(this, _T("Only DDO"), 5, 550, 155, 575);
+	m_wndImportPrice.Create(this, _T("Import Price"), 165, 550, 255, 575);
 	m_wndPrintPreview.Create(this, _T("&Print Preview"), 395, 550, 490, 575);
 	m_wndExport.Create(this, _T("&Export"), 495, 550, 575, 575);
 	m_wndDeptList.Create(this,10, 320, 570, 540); 
@@ -154,6 +155,7 @@ void CPMSGeneralDepartmentUsage::OnDoDataExchange(CDataExchange* pDX){
 	DDX_TextEx(pDX, m_wndStorageList.GetDlgCtrlID(), m_szStorageKey);
 	DDX_TextEx(pDX, m_wndItemGroup.GetDlgCtrlID(), m_szItemGroupKey);
 	DDX_Check(pDX, m_wndOnlyDDO.GetDlgCtrlID(), m_bOnlyDDO);
+	DDX_Check(pDX, m_wndImportPrice.GetDlgCtrlID(), m_bImportPrice);
 
 }
 void CPMSGeneralDepartmentUsage::SetDefaultValues(){
@@ -162,6 +164,8 @@ void CPMSGeneralDepartmentUsage::SetDefaultValues(){
 	m_szToDate.Empty();
 	m_szStorageKey.Empty();
 	m_szItemGroupKey.Empty();
+	m_bOnlyDDO = FALSE;
+	m_bImportPrice = FALSE;
 
 }
 int CPMSGeneralDepartmentUsage::SetMode(int nMode){
@@ -642,7 +646,8 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 	szWhere3.AppendFormat(_T(" AND product_org_id = '%s'"), pMF->GetModuleID());
 	szWhere4.AppendFormat(_T(" AND product_org_id = '%s'"), pMF->GetModuleID());
 	szWhere5.AppendFormat(_T(" AND product_org_id = '%s'"), pMF->GetModuleID());
-	szSQL.Format(_T(" SELECT cat, deptid,") \
+	if (m_bImportPrice)
+		szSQL.Format(_T(" SELECT cat, deptid,") \
 				_T("   get_departmentname(deptid) as deptname,") \
 				_T("   Sum(solamt)    AS sol,") \
 				_T("   Sum(polamt)    AS pol,") \
@@ -677,49 +682,49 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T("   Sum(othamt_surgery)  AS othamt_surgery") \
 				_T(" FROM   (SELECT") \
 				_T("           hpo_deptid,") \
-				_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solamt,") \
-				_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS polamt,") \
-				_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solinsamt,") \
-				_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othinsamt,") \
-				_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS seramt,") \
 				_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
-				_T("                              10, 11, 12) THEN hpol_qtyorder*hpol_unitprice") \
+				_T("                              10, 11, 12) THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS otheramt,") \
-				_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS polamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solinsamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othinsamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS seramt_surgery,") \
 				_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
-				_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othamt_surgery") \
 				_T("         FROM   hms_ipharmaorder") \
 				_T("         LEFT JOIN hms_doc ON (hd_docno=hpo_docno)") \
 				_T("         LEFT JOIN hms_ipharmaorderline ON (hpo_orderid=hpol_orderid)") \
 				_T("		 LEFT JOIN m_transaction ON (mt_transaction_id = hpo_transaction_id)") \
-				_T("		 LEFT JOIN m_product_view ON (product_id = hpol_product_id)") \
+				_T("		 LEFT JOIN m_productitem_view ON (product_item_id = hpol_product_item_id)") \
 				_T("         WHERE  hpo_orderstatus = 'A' AND hpo_ordertype IN ('D', 'M', 'B') ") \
 				_T("			%s %s) tbl1") \
 				_T(" GROUP  BY hpo_deptid") \
@@ -741,96 +746,96 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T("   Sum(othamt_surgery)  AS othamt_surgery") \
 				_T(" FROM   (SELECT") \
 				_T("           hpo_deptid,") \
-				_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solamt,") \
-				_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS polamt,") \
-				_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solinsamt,") \
-				_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othinsamt,") \
-				_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS seramt,") \
 				_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
-				_T("                              10, 11, 12) THEN hpol_qtyorder*hpol_unitprice") \
+				_T("                              10, 11, 12) THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS otheramt,") \
-				_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS polamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solinsamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othinsamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS seramt_surgery,") \
 				_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
-				_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othamt_surgery") \
 				_T("         FROM   hms_pharmaorder") \
 				_T("         LEFT JOIN hms_doc ON (hd_docno=hpo_docno)") \
 				_T("         LEFT JOIN hms_pharmaorderline ON (hpo_orderid=hpol_orderid)") \
-				_T("		 LEFT JOIN m_product_view ON (product_id = hpol_product_id)") \
+				_T("		 LEFT JOIN m_productitem_view ON (product_item_id = hpol_product_item_id)") \
 				_T("         WHERE  hpo_orderstatus = 'A' ") \
 				_T("			%s %s") \
 				_T("		 UNION ALL ") \
 				_T("		 SELECT") \
 				_T("           hpo_deptid,") \
-				_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solamt,") \
-				_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS polamt,") \
-				_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solinsamt,") \
-				_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othinsamt,") \
-				_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS seramt,") \
 				_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
-				_T("                              10, 11, 12) THEN hpol_qtyorder*hpol_unitprice") \
+				_T("                              10, 11, 12) THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS otheramt,") \
-				_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS polamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS solinsamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othinsamt_surgery,") \
-				_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS seramt_surgery,") \
 				_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
-				_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+				_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*product_unitprice") \
 				_T("           ELSE 0") \
 				_T("           END AS othamt_surgery") \
 				_T("         FROM   hms_ipharmaorder") \
 				_T("         LEFT JOIN hms_doc ON (hd_docno=hpo_docno)") \
 				_T("         LEFT JOIN hms_ipharmaorderline ON (hpo_orderid=hpol_orderid)") \
 				_T("		 LEFT JOIN m_transaction ON (mt_transaction_id = hpo_transaction_id)") \
-				_T("		 LEFT JOIN m_product_view ON (product_id = hpol_product_id)") \
+				_T("		 LEFT JOIN m_productitem_view ON (product_item_id = hpol_product_item_id)") \
 				_T("         WHERE  hpo_orderstatus = 'A' AND hpo_ordertype = 'C' ") \
 				_T("			%s %s) tbl") \
 				_T(" GROUP  BY hpo_deptid ") \
@@ -838,16 +843,16 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T(" SELECT") \
 				_T("   'Delivery' as cat,") \
 				_T("   mt_department_to_id,") \
-				_T("   Sum(mtl_qtysold*mtl_saleprice)    AS solamt,") \
-				_T("   Sum(mtl_qtypolicy*mtl_saleprice)    AS polamt,") \
-				_T("   Sum(mtl_qtysoldins*mtl_saleprice) AS solinsamt,") \
-				_T("   Sum(mtl_qtyotherins*mtl_saleprice) AS othinsamt,") \
-				_T("   Sum(mtl_qtyservice*mtl_saleprice)    AS seramt,") \
-				_T("   Sum(mtl_qtyother*mtl_saleprice)  AS otheramt,") \
+				_T("   Sum(mtl_qtysold*product_unitprice)    AS solamt,") \
+				_T("   Sum(mtl_qtypolicy*product_unitprice)    AS polamt,") \
+				_T("   Sum(mtl_qtysoldins*product_unitprice) AS solinsamt,") \
+				_T("   Sum(mtl_qtyotherins*product_unitprice) AS othinsamt,") \
+				_T("   Sum(mtl_qtyservice*product_unitprice)    AS seramt,") \
+				_T("   Sum(mtl_qtyother*product_unitprice)  AS otheramt,") \
 				_T("   0, 0, 0, 0, 0, 0") \
 				_T(" FROM m_transaction") \
 				_T(" LEFT JOIN m_transactionline ON (mt_transaction_id = mtl_transaction_id)") \
-				_T(" LEFT JOIN m_product_view ON (mtl_product_id = product_id)") \
+				_T(" LEFT JOIN m_productitem_view ON (mtl_product_item_id = product_item_id)") \
 				_T(" WHERE mt_doctype = 'DDO' AND mt_status = 'A' ") \
 				_T("	%s") \
 				_T(" GROUP BY mt_department_to_id") \
@@ -862,13 +867,13 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T("		0 AS polamt,") \
 				_T("		0 solinsamt,") \
 				_T("		0 othinsamt,") \
-				_T("		sol_qtydelivery*sol_unitprice AS seramt,") \
+				_T("		sol_qtydelivery*product_unitprice AS seramt,") \
 				_T("		0  AS otheramt,") \
 				_T("		0, 0, 0, 0, 0, 0") \
 				_T(" FROM sale_order") \
 				_T(" LEFT JOIN hms_doc ON (hd_docno = so_docno)") \
 				_T(" LEFT JOIN sale_orderline ON (so_sale_order_id = sol_sale_order_id)") \
-				_T(" LEFT JOIN m_product_view ON (sol_product_id = product_id)") \
+				_T(" LEFT JOIN m_productitem_view ON (sol_product_item_id = product_item_id)") \
 				_T(" WHERE so_doctype = 'SOO' AND so_status = 'A' ") \
 				_T("	%s %s)") \
 				_T(" WHERE 1=1 ") \
@@ -890,42 +895,42 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T("        SUM(seramt_surgery) AS seramt_surgery, ") \
 				_T("        SUM(othamt_surgery) AS othamt_surgery ") \
 				_T(" FROM   (SELECT    pro.hpo_deptid, ") \
-				_T("                   CASE WHEN hpo_object_id = 1 THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 1 THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 3 THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 3 THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS polamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 2 THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 2 THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solinsamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 4 THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 4 THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS othinsamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 7 THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 7 THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS seramt, ") \
 				_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
-				_T("                                           10, 11, 12 ) THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                                           10, 11, 12 ) THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS otheramt, ") \
-				_T("                   CASE WHEN hpo_object_id = 1 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 1 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 3 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 3 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS polamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 2 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 2 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solinsamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 4 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 4 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS othinsamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 7 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 7 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS seramt_surgery, ") \
 				_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
-				_T("                                           10, 11, 12 ) AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+				_T("                                           10, 11, 12 ) AND hpo_ordertype = 'M' THEN hpol_qtyreturn * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS othamt_surgery ") \
 				_T("         FROM      hms_pharmareturnorder pro ") \
@@ -937,42 +942,42 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T("			%s %s") \
 				_T("         UNION ALL ") \
 				_T("         SELECT    hpo_deptid deptid, ") \
-				_T("                   CASE WHEN hpo_object_id = 1 THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 1 THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 3 THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 3 THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS polamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 2 THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 2 THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solinsamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 4 THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 4 THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS othinsamt, ") \
-				_T("                   CASE WHEN hpo_object_id = 7 THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 7 THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS seramt, ") \
 				_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
-				_T("                                           10, 11, 12 ) THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                                           10, 11, 12 ) THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS otheramt, ") \
-				_T("                   CASE WHEN hpo_object_id = 1 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 1 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 3 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 3 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS polamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 2 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 2 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS solinsamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 4 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 4 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS othinsamt_surgery, ") \
-				_T("                   CASE WHEN hpo_object_id = 7 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                   CASE WHEN hpo_object_id = 7 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS seramt_surgery, ") \
 				_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
-				_T("                                           10, 11, 12 ) AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+				_T("                                           10, 11, 12 ) AND hpo_ordertype = 'M' THEN hpol_qtyreverse * product_unitprice ") \
 				_T("                   ELSE 0 ") \
 				_T("                   END AS othamt_surgery ") \
 				_T("         FROM      hms_ipharmaorder ") \
@@ -985,6 +990,350 @@ CString CPMSGeneralDepartmentUsage::GetQueryString(){
 				_T(" GROUP  BY cat, deptid") \
 				_T(" ORDER  BY cat, deptid"), szWhere1, szIsDDO, szWhere2, szIsDDO, szWhere2, szIsDDO, 
 				szWhere1, szWhere3, szIsDDO, szWhere31, szWhere4, szIsDDO, szWhere5, szIsDDO);
+	else
+		szSQL.Format(_T(" SELECT cat, deptid,") \
+					_T("   get_departmentname(deptid) as deptname,") \
+					_T("   Sum(solamt)    AS sol,") \
+					_T("   Sum(polamt)    AS pol,") \
+					_T("   Sum(solinsamt) AS solins,") \
+					_T("   Sum(othinsamt) AS othins,") \
+					_T("   Sum(seramt)    AS ser,") \
+					_T("   Sum(othamt)    AS oth,") \
+					_T("   Sum(solamt+polamt+solinsamt+othinsamt+seramt") \
+					_T("       +othamt)   AS ttl,") \
+					_T("   Sum(solamt_surgery)    AS sol_surgery,") \
+					_T("   Sum(polamt_surgery)    AS pol_surgery,") \
+					_T("   Sum(solinsamt_surgery) AS solins_surgery,") \
+					_T("   Sum(othinsamt_surgery) AS othins_surgery,") \
+					_T("   Sum(seramt_surgery)    AS ser_surgery,") \
+					_T("   Sum(othamt_surgery)    AS oth_surgery,") \
+					_T("   Sum(solamt_surgery+polamt_surgery+solinsamt_surgery+othinsamt_surgery+seramt_surgery") \
+					_T("       +othamt_surgery)   AS ttl_surgery") \
+					_T(" FROM   (SELECT") \
+					_T("   'Delivery' as cat,") \
+					_T("   hpo_deptid deptid,") \
+					_T("   Sum(solamt)    AS solamt,") \
+					_T("   Sum(polamt)    AS polamt,") \
+					_T("   Sum(solinsamt) AS solinsamt,") \
+					_T("   Sum(othinsamt) AS othinsamt,") \
+					_T("   Sum(seramt)    AS seramt,") \
+					_T("   Sum(otheramt)  AS othamt,") \
+					_T("   Sum(solamt_surgery)    AS solamt_surgery,") \
+					_T("   Sum(polamt_surgery)    AS polamt_surgery,") \
+					_T("   Sum(solinsamt_surgery) AS solinsamt_surgery,") \
+					_T("   Sum(othinsamt_surgery) AS othinsamt_surgery,") \
+					_T("   Sum(seramt_surgery)    AS seramt_surgery,") \
+					_T("   Sum(othamt_surgery)  AS othamt_surgery") \
+					_T(" FROM   (SELECT") \
+					_T("           hpo_deptid,") \
+					_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solamt,") \
+					_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS polamt,") \
+					_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solinsamt,") \
+					_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othinsamt,") \
+					_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS seramt,") \
+					_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
+					_T("                              10, 11, 12) THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS otheramt,") \
+					_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS polamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solinsamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othinsamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS seramt_surgery,") \
+					_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
+					_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othamt_surgery") \
+					_T("         FROM   hms_ipharmaorder") \
+					_T("         LEFT JOIN hms_doc ON (hd_docno=hpo_docno)") \
+					_T("         LEFT JOIN hms_ipharmaorderline ON (hpo_orderid=hpol_orderid)") \
+					_T("		 LEFT JOIN m_transaction ON (mt_transaction_id = hpo_transaction_id)") \
+					_T("		 LEFT JOIN m_product_view ON (product_id = hpol_product_id)") \
+					_T("         WHERE  hpo_orderstatus = 'A' AND hpo_ordertype IN ('D', 'M', 'B') ") \
+					_T("			%s %s) tbl1") \
+					_T(" GROUP  BY hpo_deptid") \
+					_T("		 UNION ALL") \
+					_T(" SELECT") \
+					_T("   'Delivery' as cat,") \
+					_T("   hpo_deptid,") \
+					_T("   Sum(solamt)    AS solamt,") \
+					_T("   Sum(polamt)    AS polamt,") \
+					_T("   Sum(solinsamt) AS solinsamt,") \
+					_T("   Sum(othinsamt) AS othinsamt,") \
+					_T("   Sum(seramt)    AS seramt,") \
+					_T("   Sum(otheramt)  AS otheramt,") \
+					_T("   Sum(solamt_surgery)    AS solamt_surgery,") \
+					_T("   Sum(polamt_surgery)    AS polamt_surgery,") \
+					_T("   Sum(solinsamt_surgery) AS solinsamt_surgery,") \
+					_T("   Sum(othinsamt_surgery) AS othinsamt_surgery,") \
+					_T("   Sum(seramt_surgery)    AS seramt_surgery,") \
+					_T("   Sum(othamt_surgery)  AS othamt_surgery") \
+					_T(" FROM   (SELECT") \
+					_T("           hpo_deptid,") \
+					_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solamt,") \
+					_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS polamt,") \
+					_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solinsamt,") \
+					_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othinsamt,") \
+					_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS seramt,") \
+					_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
+					_T("                              10, 11, 12) THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS otheramt,") \
+					_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS polamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solinsamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othinsamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS seramt_surgery,") \
+					_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
+					_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othamt_surgery") \
+					_T("         FROM   hms_pharmaorder") \
+					_T("         LEFT JOIN hms_doc ON (hd_docno=hpo_docno)") \
+					_T("         LEFT JOIN hms_pharmaorderline ON (hpo_orderid=hpol_orderid)") \
+					_T("		 LEFT JOIN m_product_view ON (product_id = hpol_product_id)") \
+					_T("         WHERE  hpo_orderstatus = 'A' ") \
+					_T("			%s %s") \
+					_T("		 UNION ALL ") \
+					_T("		 SELECT") \
+					_T("           hpo_deptid,") \
+					_T("           CASE WHEN hpo_object_id=1 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solamt,") \
+					_T("           CASE WHEN hpo_object_id=3 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS polamt,") \
+					_T("           CASE WHEN hpo_object_id=2 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solinsamt,") \
+					_T("           CASE WHEN hpo_object_id=4 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othinsamt,") \
+					_T("           CASE WHEN hpo_object_id=7 THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS seramt,") \
+					_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
+					_T("                              10, 11, 12) THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS otheramt,") \
+					_T("           CASE WHEN hpo_object_id=1 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=3 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS polamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=2 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS solinsamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=4 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othinsamt_surgery,") \
+					_T("           CASE WHEN hpo_object_id=7 AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS seramt_surgery,") \
+					_T("           CASE WHEN hpo_object_id IN (5, 6, 8, 9,") \
+					_T("                              10, 11, 12) AND hpo_ordertype = 'M' THEN hpol_qtyorder*hpol_unitprice") \
+					_T("           ELSE 0") \
+					_T("           END AS othamt_surgery") \
+					_T("         FROM   hms_ipharmaorder") \
+					_T("         LEFT JOIN hms_doc ON (hd_docno=hpo_docno)") \
+					_T("         LEFT JOIN hms_ipharmaorderline ON (hpo_orderid=hpol_orderid)") \
+					_T("		 LEFT JOIN m_transaction ON (mt_transaction_id = hpo_transaction_id)") \
+					_T("		 LEFT JOIN m_product_view ON (product_id = hpol_product_id)") \
+					_T("         WHERE  hpo_orderstatus = 'A' AND hpo_ordertype = 'C' ") \
+					_T("			%s %s) tbl") \
+					_T(" GROUP  BY hpo_deptid ") \
+					_T(" UNION ALL") \
+					_T(" SELECT") \
+					_T("   'Delivery' as cat,") \
+					_T("   mt_department_to_id,") \
+					_T("   Sum(mtl_qtysold*mtl_saleprice)    AS solamt,") \
+					_T("   Sum(mtl_qtypolicy*mtl_saleprice)    AS polamt,") \
+					_T("   Sum(mtl_qtysoldins*mtl_saleprice) AS solinsamt,") \
+					_T("   Sum(mtl_qtyotherins*mtl_saleprice) AS othinsamt,") \
+					_T("   Sum(mtl_qtyservice*mtl_saleprice)    AS seramt,") \
+					_T("   Sum(mtl_qtyother*mtl_saleprice)  AS otheramt,") \
+					_T("   0, 0, 0, 0, 0, 0") \
+					_T(" FROM m_transaction") \
+					_T(" LEFT JOIN m_transactionline ON (mt_transaction_id = mtl_transaction_id)") \
+					_T(" LEFT JOIN m_product_view ON (mtl_product_id = product_id)") \
+					_T(" WHERE mt_doctype = 'DDO' AND mt_status = 'A' ") \
+					_T("	%s") \
+					_T(" GROUP BY mt_department_to_id") \
+					_T(" UNION ALL") \
+					_T(" SELECT cat, deptid, 0, 0, 0, 0, sum(seramt) seramt, 0, ") \
+					_T(" 0, 0, 0, 0, 0, 0") \
+					_T(" FROM(") \
+					_T("	SELECT") \
+					_T("		'Delivery' as cat,") \
+					_T("		case when NVL(so_partner_type_id, 'W') = 'W' THEN hd_admitdept else so_partneraddress end deptid,") \
+					_T("		0 AS solamt,") \
+					_T("		0 AS polamt,") \
+					_T("		0 solinsamt,") \
+					_T("		0 othinsamt,") \
+					_T("		sol_qtydelivery*sol_unitprice AS seramt,") \
+					_T("		0  AS otheramt,") \
+					_T("		0, 0, 0, 0, 0, 0") \
+					_T(" FROM sale_order") \
+					_T(" LEFT JOIN hms_doc ON (hd_docno = so_docno)") \
+					_T(" LEFT JOIN sale_orderline ON (so_sale_order_id = sol_sale_order_id)") \
+					_T(" LEFT JOIN m_product_view ON (sol_product_id = product_id)") \
+					_T(" WHERE so_doctype = 'SOO' AND so_status = 'A' ") \
+					_T("	%s %s)") \
+					_T(" WHERE 1=1 ") \
+					_T("	%s") \
+					_T(" GROUP BY deptid ") \
+					_T(" UNION ALL ") \
+					_T(" SELECT 'Return' AS cat, ") \
+					_T("        hpo_deptid, ") \
+					_T("        SUM(solamt) AS solamt, ") \
+					_T("        SUM(polamt) AS polamt, ") \
+					_T("        SUM(solinsamt) AS solinsamt, ") \
+					_T("        SUM(othinsamt) AS othinsamt, ") \
+					_T("        SUM(seramt) AS seramt, ") \
+					_T("        SUM(otheramt) AS otheramt, ") \
+					_T("        SUM(solamt_surgery) AS solamt_surgery, ") \
+					_T("        SUM(polamt_surgery) AS polamt_surgery, ") \
+					_T("        SUM(solinsamt_surgery) AS solinsamt_surgery, ") \
+					_T("        SUM(othinsamt_surgery) AS othinsamt_surgery, ") \
+					_T("        SUM(seramt_surgery) AS seramt_surgery, ") \
+					_T("        SUM(othamt_surgery) AS othamt_surgery ") \
+					_T(" FROM   (SELECT    pro.hpo_deptid, ") \
+					_T("                   CASE WHEN hpo_object_id = 1 THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 3 THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS polamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 2 THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solinsamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 4 THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS othinsamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 7 THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS seramt, ") \
+					_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
+					_T("                                           10, 11, 12 ) THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS otheramt, ") \
+					_T("                   CASE WHEN hpo_object_id = 1 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 3 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS polamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 2 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solinsamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 4 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS othinsamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 7 AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS seramt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
+					_T("                                           10, 11, 12 ) AND hpo_ordertype = 'M' THEN hpol_qtyreturn * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS othamt_surgery ") \
+					_T("         FROM      hms_pharmareturnorder pro ") \
+					_T("         LEFT JOIN hms_pharmaorder po ON ( po.hpo_docno = pro.hpo_docno AND po.hpo_orderid = pro.hpo_orderid ) ") \
+					_T("         LEFT JOIN hms_doc ON ( hd_docno = pro.hpo_docno ) ") \
+					_T("         LEFT JOIN hms_pharmareturnorder_line prol ON ( pro.hpo_orderid = hpol_orderid ) ") \
+					_T("         LEFT JOIN m_productitem_view ON ( product_item_id = prol.hpol_product_item_id ) ") \
+					_T("         WHERE     pro.hpo_status = 'A' ") \
+					_T("			%s %s") \
+					_T("         UNION ALL ") \
+					_T("         SELECT    hpo_deptid deptid, ") \
+					_T("                   CASE WHEN hpo_object_id = 1 THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 3 THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS polamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 2 THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solinsamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 4 THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS othinsamt, ") \
+					_T("                   CASE WHEN hpo_object_id = 7 THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS seramt, ") \
+					_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
+					_T("                                           10, 11, 12 ) THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS otheramt, ") \
+					_T("                   CASE WHEN hpo_object_id = 1 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 3 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS polamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 2 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS solinsamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 4 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS othinsamt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id = 7 AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS seramt_surgery, ") \
+					_T("                   CASE WHEN hpo_object_id IN ( 5, 6, 8, 9, ") \
+					_T("                                           10, 11, 12 ) AND hpo_ordertype = 'M' THEN hpol_qtyreverse * hpol_unitprice ") \
+					_T("                   ELSE 0 ") \
+					_T("                   END AS othamt_surgery ") \
+					_T("         FROM      hms_ipharmaorder ") \
+					_T("         LEFT JOIN hms_ipharmaorderline ON ( hpo_orderid = hpol_orderid ) ") \
+					_T("         LEFT JOIN m_productitem_view ON ( hpol_product_item_id = product_item_id ) ") \
+					_T("         LEFT JOIN m_transaction ON ( mt_transaction_id = hpol_retorder_id ) ") \
+					_T("         WHERE     hpol_qtyreverse > 0 AND mt_status = 'A' ") \
+					_T("			%s %s) ") \
+					_T(" GROUP  BY hpo_deptid )") \
+					_T(" GROUP  BY cat, deptid") \
+					_T(" ORDER  BY cat, deptid"), szWhere1, szIsDDO, szWhere2, szIsDDO, szWhere2, szIsDDO, 
+					szWhere1, szWhere3, szIsDDO, szWhere31, szWhere4, szIsDDO, szWhere5, szIsDDO);
 _fmsg(_T("%s"), szSQL);
 	return szSQL;
 }BEGIN_MESSAGE_MAP(CPMSGeneralDepartmentUsage, CGuiView)

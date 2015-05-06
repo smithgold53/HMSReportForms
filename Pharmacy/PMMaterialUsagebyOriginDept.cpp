@@ -110,6 +110,9 @@ static int _OnStorageListCheckAllFnc(CWnd* pWnd){
 static int _OnStorageListUnCheckAllFnc(CWnd *pWnd){
 	return ((CPMMaterialUsagebyOriginDept*)pWnd)->OnStorageListUncheckAll();
 }
+static void _OnInPatientSelectFnc(CWnd *pWnd){
+	return ((CPMMaterialUsagebyOriginDept*)pWnd)->OnInPatientSelect();
+}
 CPMMaterialUsagebyOriginDept::CPMMaterialUsagebyOriginDept(CWnd *pParent){
 
 	m_nDlgWidth = 1029;
@@ -130,7 +133,7 @@ void CPMMaterialUsagebyOriginDept::OnCreateComponents(){
 	m_wndToDate.Create(this,380, 60, 570, 85); 
 	m_wndTypeLabel.Create(this, _T("Type"), 10, 90, 90, 115);
 	m_wndType.Create(this,95, 90, 280, 115); 
-	m_wndPaid.Create(this, _T("Paid"), 5, 550, 105, 575);
+	m_wndInPatient.Create(this, _T("In Patient"), 5, 550, 105, 575);
 	m_wndPrint.Create(this, _T("&Print"), 410, 550, 490, 575);
 	m_wndExport.Create(this, _T("&Export"), 495, 550, 575, 575);
 	m_wndStorageList.Create(this,10, 120, 280, 320); 
@@ -210,6 +213,7 @@ void CPMMaterialUsagebyOriginDept::OnSetWindowEvents(){
 
 	m_wndDeptList.AddEvent(1, _T("Check All"), _OnDeptListCheckAllFnc);
 	m_wndDeptList.AddEvent(2, _T("UnCheck All"), _OnDeptListUnCheckAllFnc);
+	m_wndInPatient.SetEvent(WE_CLICK, _OnInPatientSelectFnc);
 	CString szSysDate = pMF->GetSysDate();
 	m_nYear = ToInt(szSysDate.Left(4));
 	m_szReportPeriodKey.Format(_T("%d"), ToInt(szSysDate.Mid(5, 2)));
@@ -229,7 +233,7 @@ void CPMMaterialUsagebyOriginDept::OnDoDataExchange(CDataExchange* pDX){
 	DDX_TextEx(pDX, m_wndFromDate.GetDlgCtrlID(), m_szFromDate);
 	DDX_TextEx(pDX, m_wndToDate.GetDlgCtrlID(), m_szToDate);
 	DDX_TextEx(pDX, m_wndType.GetDlgCtrlID(), m_szTypeKey);
-	DDX_Check(pDX, m_wndPaid.GetDlgCtrlID(), m_bPaid);
+	DDX_Check(pDX, m_wndInPatient.GetDlgCtrlID(), m_bInPatient);
 
 }
 void CPMMaterialUsagebyOriginDept::SetDefaultValues(){
@@ -789,15 +793,19 @@ int CPMMaterialUsagebyOriginDept::OnDeptListDeleteItem(){
  
 long CPMMaterialUsagebyOriginDept::OnDeptListLoadData(){
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();
+	UpdateData(true);
 	CRecord rs(&pMF->m_db);
-	CString szSQL;
+	CString szSQL, szWhere;
 
 	m_wndDeptList.BeginLoad();
 	int nCount = 0;
-
+	if (m_bInPatient)
+		szWhere = _T(" AND sd_type = 'DT'");
+	else
+		szWhere = _T(" AND sd_type = 'KB'");
 	szSQL.Format(_T("SELECT sd_id as id, sd_name as name ") \
 		         _T("FROM sys_dept ") \
-				 _T("WHERE 1=1 AND sd_type='DT' ORDER BY id "));
+				 _T("WHERE 1=1 %s ORDER BY id "), szWhere);
 
 	nCount = rs.ExecSQL(szSQL);
 	while(!rs.IsEOF()){ 
@@ -813,7 +821,7 @@ long CPMMaterialUsagebyOriginDept::OnDeptListLoadData(){
 CString CPMMaterialUsagebyOriginDept::GetQueryString(){
 	CMainFrame_E10 *pMF = (CMainFrame_E10*) AfxGetMainWnd();
 	CString szSQL, szWhere, szWhere1, szObjects, szDepts, szStorage, szDeptWhere;
-	//if (!m_bPaid)
+	//if (!m_bInPatient)
 	szWhere.AppendFormat(_T(" AND mt_status = 'A' AND mt_approveddate BETWEEN cast_string2timestamp('%s') AND cast_string2timestamp('%s')"), m_szFromDate, m_szToDate);
 	szWhere1.AppendFormat(_T(" AND hpo_orderstatus = 'A' AND hpo_approvedate BETWEEN cast_string2timestamp('%s') AND cast_string2timestamp('%s')"), m_szFromDate, m_szToDate);
 	for (int i = 0; i < m_wndStorageList.GetItemCount(); i++)
@@ -865,54 +873,81 @@ CString CPMMaterialUsagebyOriginDept::GetQueryString(){
 	}
 	szWhere.AppendFormat(_T(" AND product_org_id = '%s'"), pMF->GetModuleID());
 	szWhere1.AppendFormat(_T(" AND product_org_id = '%s'"), pMF->GetModuleID());
-	szSQL.Format(_T(" SELECT    hpo_docno                              docno, ") \
+	if (m_bInPatient)
+		szSQL.Format(_T(" SELECT    hpo_docno                              docno, ") \
+					_T("           Hms_getage(hd_admitdate, hp_birthdate) age, ") \
+					_T("           hd_cardno                              cardno, ") \
+					_T("           Get_patientname(hpo_docno)             pname, ") \
+					_T("           hpo_deptid, ") \
+					_T("           Get_syssel_desc('hms_rank', hp_rank)   rank, ") \
+					_T("           hp_workplace                           workplace, ") \
+					_T("           hcr_recordno                           recordno, ") \
+					_T("           sum(amt) amt ") \
+					_T(" FROM      (SELECT    hpo_docno, ") \
+					_T("                      CASE WHEN hpo_deptid = 'B5' AND hpo_storage_id = 12 ") \
+					_T("						THEN (select ho_deptid FROM hms_operation where ho_idx = hpo_reference_id) ELSE hpo_deptid END AS hpo_deptid, ") \
+					_T("                      hpol_qtyorder * hpol_unitprice amt ") \
+					_T("            FROM      hms_ipharmaorder ") \
+					_T("            LEFT JOIN hms_ipharmaorderline ON ( hpo_orderid = hpol_orderid ) ") \
+					_T("            LEFT JOIN m_productitem_view ON ( hpol_product_item_id = product_item_id ) ") \
+					_T("            WHERE     hpo_ordertype IN ('D', 'M', 'B') %s") \
+					_T("            UNION ALL ") \
+					_T("            SELECT    hpo_docno, ") \
+					_T("                      hpo_deptid, ") \
+					_T("                      hpol_qtyorder * hpol_unitprice amt ") \
+					_T("            FROM      m_transaction ") \
+					_T("            LEFT JOIN hms_medical_transaction_view ON ( mt_transaction_id = hmt_reftransaction_id ) ") \
+					_T("            LEFT JOIN hms_ipharmaorder ON ( hpo_orderid = hmt_orderid ") \
+					_T("                                            AND hpo_docno = hmt_docno ) ") \
+					_T("            LEFT JOIN hms_ipharmaorderline ON ( hpo_orderid = hpol_orderid ") \
+					_T("                                                AND hmt_product_id = hpol_product_id ) ") \
+					_T("            LEFT JOIN m_productitem_view ON ( hpol_product_item_id = product_item_id ) ") \
+					_T("            WHERE     mt_doctype IN ('CSO') %s") \
+					_T("            UNION ALL ") \
+					_T("            SELECT    cast(mt_partner_id as number(10)), ") \
+					_T("                      mt_department_to_id, ") \
+					_T("                      hpol_qtyissue * hpol_unitprice amt ") \
+					_T("            FROM      m_transaction ") \
+					_T("			LEFT JOIN purchase_orderline2 ON (mt_transaction_id = pol_transaction_id)") \
+					_T("			LEFT JOIN hms_ipharmaorder ON (hpo_orderid = pol_orderid)")
+					_T("			LEFT JOIN hms_ipharmaorderline ON (pol_orderid = hpol_orderid AND pol_product_id = hpol_product_id)") \
+					_T("            LEFT JOIN m_productitem_view ON ( pol_product_item_id = product_item_id ) ") \
+					_T("            WHERE     mt_doctype IN ('CON') %s)") \
+					_T(" LEFT JOIN hms_clinical_record ON ( hcr_docno = hpo_docno ) ") \
+					_T(" LEFT JOIN hms_doc ON ( hcr_docno = hd_docno ) ") \
+					_T(" LEFT JOIN hms_patient ON ( hp_patientno = hd_patientno ) ") \
+					_T(" WHERE 1=1 %s") \
+					_T(" GROUP BY hpo_docno, ") \
+					_T("		  hpo_deptid, ") \
+					_T("		  hd_admitdate, hp_birthdate, hp_rank, hd_cardno, hp_workplace, hcr_recordno") \
+					_T(" ORDER     BY hpo_deptid, ") \
+					_T("              hpo_docno "), szWhere1, szWhere, szWhere, szDeptWhere);
+	else
+		szSQL.Format(_T(" SELECT    hpo_docno                              docno, ") \
 				_T("           Hms_getage(hd_admitdate, hp_birthdate) age, ") \
 				_T("           hd_cardno                              cardno, ") \
 				_T("           Get_patientname(hpo_docno)             pname, ") \
 				_T("           hpo_deptid, ") \
 				_T("           Get_syssel_desc('hms_rank', hp_rank)   rank, ") \
 				_T("           hp_workplace                           workplace, ") \
-				_T("           hcr_recordno                           recordno, ") \
 				_T("           sum(amt) amt ") \
 				_T(" FROM      (SELECT    hpo_docno, ") \
 				_T("                      CASE WHEN hpo_deptid = 'B5' AND hpo_storage_id = 12 ") \
 				_T("						THEN (select ho_deptid FROM hms_operation where ho_idx = hpo_reference_id) ELSE hpo_deptid END AS hpo_deptid, ") \
 				_T("                      hpol_qtyorder * hpol_unitprice amt ") \
-				_T("            FROM      hms_ipharmaorder ") \
-				_T("            LEFT JOIN hms_ipharmaorderline ON ( hpo_orderid = hpol_orderid ) ") \
+				_T("            FROM      hms_pharmaorder ") \
+				_T("            LEFT JOIN hms_pharmaorderline ON ( hpo_orderid = hpol_orderid ) ") \
 				_T("            LEFT JOIN m_productitem_view ON ( hpol_product_item_id = product_item_id ) ") \
-				_T("            WHERE     hpo_ordertype IN ('D', 'M', 'B') %s") \
-				_T("            UNION ALL ") \
-				_T("            SELECT    hpo_docno, ") \
-				_T("                      hpo_deptid, ") \
-				_T("                      hpol_qtyorder * hpol_unitprice amt ") \
-				_T("            FROM      m_transaction ") \
-				_T("            LEFT JOIN hms_medical_transaction_view ON ( mt_transaction_id = hmt_reftransaction_id ) ") \
-				_T("            LEFT JOIN hms_ipharmaorder ON ( hpo_orderid = hmt_orderid ") \
-				_T("                                            AND hpo_docno = hmt_docno ) ") \
-				_T("            LEFT JOIN hms_ipharmaorderline ON ( hpo_orderid = hpol_orderid ") \
-				_T("                                                AND hmt_product_id = hpol_product_id ) ") \
-				_T("            LEFT JOIN m_productitem_view ON ( hpol_product_item_id = product_item_id ) ") \
-				_T("            WHERE     mt_doctype IN ('CSO'	) %s") \
-				_T("            UNION ALL ") \
-				_T("            SELECT    cast(mt_partner_id as number(10)), ") \
-				_T("                      mt_department_to_id, ") \
-				_T("                      hpol_qtyissue * hpol_unitprice amt ") \
-				_T("            FROM      m_transaction ") \
-				_T("			LEFT JOIN purchase_orderline2 ON (mt_transaction_id = pol_transaction_id)") \
-				_T("			LEFT JOIN hms_ipharmaorder ON (hpo_orderid = pol_orderid)")
-				_T("			LEFT JOIN hms_ipharmaorderline ON (pol_orderid = hpol_orderid AND pol_product_id = hpol_product_id)") \
-				_T("            LEFT JOIN m_productitem_view ON ( pol_product_item_id = product_item_id ) ") \
-				_T("            WHERE     mt_doctype IN ('CON') %s)") \
-				_T(" LEFT JOIN hms_clinical_record ON ( hcr_docno = hpo_docno ) ") \
-				_T(" LEFT JOIN hms_doc ON ( hcr_docno = hd_docno ) ") \
+				_T("            WHERE 1=1 %s)") \
+				_T(" LEFT JOIN hms_doc ON ( hpo_docno = hd_docno ) ") \
 				_T(" LEFT JOIN hms_patient ON ( hp_patientno = hd_patientno ) ") \
 				_T(" WHERE 1=1 %s") \
 				_T(" GROUP BY hpo_docno, ") \
 				_T("		  hpo_deptid, ") \
-				_T("		  hd_admitdate, hp_birthdate, hp_rank, hd_cardno, hp_workplace, hcr_recordno") \
+				_T("		  hd_admitdate, hp_birthdate, hp_rank, hd_cardno, hp_workplace") \
 				_T(" ORDER     BY hpo_deptid, ") \
-				_T("              hpo_docno "), szWhere1, szWhere, szWhere, szDeptWhere);_fmsg(_T("%s"), szSQL);
+				_T("              hpo_docno "), szWhere1, szDeptWhere);
+_fmsg(_T("%s"), szSQL);
 	return szSQL;
 }
 
@@ -987,4 +1022,8 @@ int CPMMaterialUsagebyOriginDept::OnStorageListUncheckAll()
 		}
 	}
 	return 0;
+}
+
+void CPMMaterialUsagebyOriginDept::OnInPatientSelect(){
+	OnDeptListLoadData();
 }

@@ -493,6 +493,8 @@ void CFMStatisticPaidPatientList::OnPrintPreviewSelect()
 					nGroupTotal[i] = 0;
 				}
 			}
+			rptDetail = rpt.AddDetail(rpt.GetGroupHeader(0));
+			rptDetail->SetValue(_T("GroupName"), szNewLine);
 			szOldLine = szNewLine;
 		}
 		rptDetail = rpt.AddDetail();
@@ -752,22 +754,21 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 	szWhere.Empty();
 	
 	if (!m_szClerkKey.IsEmpty())
-		szWhere.AppendFormat(_T(" AND fi.hfe_staff='%s' "), m_szClerkKey);
+		szWhere.AppendFormat(_T(" AND staff='%s' "), m_szClerkKey);
 	if (!m_szGroupKey.IsEmpty())
-		szWhere.AppendFormat(_T(" AND fe.hfe_group='%s' "), m_szGroupKey);
+		szWhere.AppendFormat(_T(" AND feegroup='%s' "), m_szGroupKey);
 	if (!m_szItemKey.IsEmpty())
-		szWhere.AppendFormat(_T(" AND fe.hfe_itemid='%s' "), m_szItemKey);
+		szWhere.AppendFormat(_T(" AND itemid='%s' "), m_szItemKey);
 
 	if (m_bLocked)
 	{
-		szWhere.AppendFormat(_T(" AND fi.hfe_locked='Y' "));
-		szLock.AppendFormat(_T(" AND fi.hfe_locked='Y' "));
-		szWhere.AppendFormat(_T(" AND fac_posteddate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') "),
+		szWhere.AppendFormat(_T(" AND lockstt='Y' "));
+		szWhere.AppendFormat(_T(" AND receiptdate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') "),
 			                 m_szFromDate, m_szToDate);
 	}
 	else
 	{
-		szWhere.AppendFormat(_T(" AND fac_posteddate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') "),
+		szWhere.AppendFormat(_T(" AND receiptdate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') "),
 			                 m_szFromDate, m_szToDate);
 	}
 
@@ -784,7 +785,13 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 				_T("FROM   (SELECT    fi.hfe_deptid AS deptid, ") \
 				_T("                  fi.hfe_docno AS docno, ") \
 				_T("                  get_patientname(fi.hfe_docno) AS pname, ") \
-				_T("                  Cast_timestamp2date(fac_posteddate) AS receiptdate, ") \
+				_T("				  fi.hfe_status as status, ") \
+                _T("				  fi.hfe_objectid as obj, ") \
+                _T("				  fe.hfe_group as feegroup, ") \
+                _T("				  fe.hfe_itemid as itemid, ") \
+				_T("				  fi.hfe_locked as lockstt, ") \
+				_T("				  fi.hfe_staff as staff, ") \
+				_T("                  Cast_timestamp2date(fi.hfe_date) AS receiptdate, ") \
 				_T("                  CASE WHEN fi.hfe_class = 'I' ") \
 				_T("                       AND hfe_category <> 'Y' THEN fe.hfe_patpaid ") \
 				_T("                  ELSE 0 ") \
@@ -793,31 +800,15 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 				_T("                       AND hfe_category <> 'Y' THEN fe.hfe_patpaid ") \
 				_T("                  ELSE 0 ") \
 				_T("                  END AS thunoi, ") \
-				_T("                  0 AS trangoai ") \
+				_T("                  CASE WHEN fe.hfe_status = 'R' ") \
+				_T("					   AND fe.hfe_class = 'I' THEN fe.hfe_cost ELSE 0 END AS trangoai ") \
 				_T("        FROM      hms_fee_invoice fi ") \
 				_T("        LEFT JOIN hms_fee fe ON( fi.hfe_docno = fe.hfe_docno ") \
 				_T("                             AND fi.hfe_invoiceno = fe.hfe_invoiceno ) ") \
 				_T("        LEFT JOIN fa_cash ON( fi.hfe_cash_id = fac_cash_id ) ") \
 				_T("        LEFT JOIN hms_doc d ON ( d.hd_docno = fi.hfe_docno ) ") \
-				_T("        WHERE     1=1 %s ") \
-				_T("                  AND fi.hfe_status = 'P' ") \
-				_T("                  AND fi.hfe_objectid = '7' AND fe.hfe_object = '7' ") \
-				_T("        UNION ALL ") \
-				_T("        SELECT    fi.hfe_deptid AS deptid, ") \
-				_T("                  fi.hfe_docno AS docno, ") \
-				_T("                  get_patientname(fi.hfe_docno) AS pname, ") \
-				_T("                  Cast_timestamp2date(fac_posteddate) AS receiptdate, ") \
-				_T("                  0 AS thungoai, ") \
-				_T("                  0 AS thunoi, ") \
-				_T("                  CASE WHEN fi.hfe_class = 'I' THEN fi.hfe_refund ") \
-				_T("                  ELSE 0 ") \
-				_T("                  END AS trangoai ") \
-				_T("        FROM      hms_fee_invoice fi ") \
-				_T("        LEFT JOIN fa_cash ON( fi.hfe_cash_id = fac_cash_id ) ") \
-				_T("        LEFT JOIN hms_doc d ON ( d.hd_docno = fi.hfe_docno ) ") \
-				_T("        WHERE     fac_posteddate BETWEEN Cast_string2timestamp('%s') AND Cast_string2timestamp('%s') %s") \
-				_T("                  AND fi.hfe_status = 'P' ") \
-				_T("                  AND fi.hfe_objectid = '7' ) ") \
+				_T(" ) ") \
+				_T(" WHERE status = 'P' AND obj = '7' %s ") \
 				_T("GROUP  BY deptid, ") \
 				_T("          docno, pname,") \
 				_T("          receiptdate ") \
@@ -826,7 +817,7 @@ CString CFMStatisticPaidPatientList::GetQueryString()
 				_T("        OR Sum(trangoai) > 0 ") \
 				_T("ORDER  BY receiptdate, ") \
 				_T("          deptid, docno,") \
-				_T("          pname "), szWhere, m_szFromDate, m_szToDate, szLock);
-
+				_T("          pname "), szWhere);
+	_fmsg(_T("%s"), szSQL);
 	return szSQL;
 }
